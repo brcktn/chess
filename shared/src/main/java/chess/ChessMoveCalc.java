@@ -25,8 +25,35 @@ public class ChessMoveCalc {
     private static Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> moves = new ArrayList<>();
 
-        // NE Moves
+        // NE moves
         for (int i = myPosition.getRow() + 1, j = myPosition.getColumn() + 1; i <= 8 && j <= 8; i++, j++) {
+            ChessPosition newPosition = new ChessPosition(i, j);
+            if (board.getPiece(newPosition) != null) {
+                break;
+            }
+            moves.add(new ChessMove(myPosition, newPosition, null));
+        }
+
+        // NW moves
+        for (int i = myPosition.getRow() + 1, j = myPosition.getColumn() - 1; i <= 8 && j >= 1; i++, j--) {
+            ChessPosition newPosition = new ChessPosition(i, j);
+            if (board.getPiece(newPosition) != null) {
+                break;
+            }
+            moves.add(new ChessMove(myPosition, newPosition, null));
+        }
+
+        // SE moves
+        for (int i = myPosition.getRow() - 1, j = myPosition.getColumn() + 1; i >= 1 && j <= 8; i--, j++) {
+            ChessPosition newPosition = new ChessPosition(i, j);
+            if (board.getPiece(newPosition) != null) {
+                break;
+            }
+            moves.add(new ChessMove(myPosition, newPosition, null));
+        }
+
+        // SW moves
+        for (int i = myPosition.getRow() - 1, j = myPosition.getColumn() - 1; i >= 1 && j >= 1; i--, j--) {
             ChessPosition newPosition = new ChessPosition(i, j);
             if (board.getPiece(newPosition) != null) {
                 break;
