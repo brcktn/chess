@@ -27,38 +27,22 @@ public class ChessMoveCalc {
 
         // NE moves
         for (int i = myPosition.getRow() + 1, j = myPosition.getColumn() + 1; i <= 8 && j <= 8; i++, j++) {
-            ChessPosition newPosition = new ChessPosition(i, j);
-            if (board.getPiece(newPosition) != null) {
-                break;
-            }
-            moves.add(new ChessMove(myPosition, newPosition, null));
+            if (addToMoves(board, myPosition, moves, i, j)) break;
         }
 
         // NW moves
         for (int i = myPosition.getRow() + 1, j = myPosition.getColumn() - 1; i <= 8 && j >= 1; i++, j--) {
-            ChessPosition newPosition = new ChessPosition(i, j);
-            if (board.getPiece(newPosition) != null) {
-                break;
-            }
-            moves.add(new ChessMove(myPosition, newPosition, null));
+            if (addToMoves(board, myPosition, moves, i, j)) break;
         }
 
         // SE moves
         for (int i = myPosition.getRow() - 1, j = myPosition.getColumn() + 1; i >= 1 && j <= 8; i--, j++) {
-            ChessPosition newPosition = new ChessPosition(i, j);
-            if (board.getPiece(newPosition) != null) {
-                break;
-            }
-            moves.add(new ChessMove(myPosition, newPosition, null));
+            if (addToMoves(board, myPosition, moves, i, j)) break;
         }
 
         // SW moves
         for (int i = myPosition.getRow() - 1, j = myPosition.getColumn() - 1; i >= 1 && j >= 1; i--, j--) {
-            ChessPosition newPosition = new ChessPosition(i, j);
-            if (board.getPiece(newPosition) != null) {
-                break;
-            }
-            moves.add(new ChessMove(myPosition, newPosition, null));
+            if (addToMoves(board, myPosition, moves, i, j)) break;
         }
 
         return moves;
@@ -76,4 +60,21 @@ public class ChessMoveCalc {
     private static Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
         throw new RuntimeException("Not implemented");
     }
+
+    private static boolean addToMoves(ChessBoard board, ChessPosition myPosition, ArrayList<ChessMove> moves, int i, int j) {
+        ChessPosition newPosition = new ChessPosition(i, j);
+        ChessPiece blockingPiece = board.getPiece(newPosition);
+        ChessPiece currentPiece = board.getPiece(myPosition);
+
+        if (board.getPiece(newPosition) != null) {
+            if (blockingPiece.getTeamColor() != currentPiece.getTeamColor()) {
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+            return true;
+        }
+        moves.add(new ChessMove(myPosition, newPosition, null));
+        return false;
+    }
 }
+
+
