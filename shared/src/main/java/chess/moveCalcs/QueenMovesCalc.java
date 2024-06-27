@@ -2,15 +2,15 @@ package chess.moveCalcs;
 
 import chess.ChessBoard;
 import chess.ChessMove;
-import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BishopMoveCalc {
-    public static Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition currPosition) {
+public class QueenMovesCalc {
+    public static Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition currPosition) {
         ArrayList<ChessMove> moves = new ArrayList<>();
+        ChessMoveCalc.straightMoves(moves, board, currPosition);
         ChessMoveCalc.diagonalMoves(moves, board, currPosition);
         return moves;
     }
