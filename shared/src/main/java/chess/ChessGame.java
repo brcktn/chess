@@ -9,16 +9,20 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private ChessBoard board;
+    private TeamColor turn;
 
     public ChessGame() {
-
+        board = new ChessBoard();
+        board.resetBoard();
+        turn = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return turn;
     }
 
     /**
@@ -27,7 +31,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        turn = team;
     }
 
     /**
@@ -96,7 +100,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +109,37 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
+        return board;
+    }
+
+    /**
+     * Determines if given move is allowed
+     * takes into account if the move is by the right team,
+     * and if the move leaves the team in check.
+     *
+     * @param move Move made
+     * @return True if allowed, otherwise false
+     */
+    private boolean isValidMove(ChessMove move) {
+        TeamColor moveTeam = board.getPiece(move.getStartPosition()).getTeamColor();
+        if (moveTeam != getTeamTurn()) {
+            return false;
+        }
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * Returns chess board with move made without updating game board
+     *
+     * @param move Move to make
+     * @return Board if move was made
+     */
+    private ChessBoard testMove(ChessMove move) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    private boolean isInCheckHelper(ChessBoard board, ChessMove move) {
         throw new RuntimeException("Not implemented");
     }
 }
+
