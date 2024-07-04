@@ -60,7 +60,11 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        if (!isValidMove(move)) {
+            throw new InvalidMoveException();
+        }
+        ChessBoard newBoard = getMovedBoard(getBoard(), move);
+        setBoard(newBoard);
     }
 
     /**
@@ -97,10 +101,10 @@ public class ChessGame {
     /**
      * Sets this game's chessboard with a given board
      *
-     * @param board the new board to use
+     * @param inputBoard the new board to use
      */
-    public void setBoard(ChessBoard board) {
-        this.board = board;
+    public void setBoard(ChessBoard inputBoard) {
+        this.board = inputBoard;
     }
 
     /**
@@ -125,7 +129,8 @@ public class ChessGame {
         if (moveTeam != getTeamTurn()) {
             return false;
         }
-        throw new RuntimeException("Not implemented");
+        ChessBoard potentialBoard = getMovedBoard(board, move);
+        return !isInCheckHelper(potentialBoard, moveTeam);
     }
 
     /**
@@ -134,11 +139,27 @@ public class ChessGame {
      * @param move Move to make
      * @return Board if move was made
      */
-    private ChessBoard getMovedBoard(ChessMove move) {
-        throw new RuntimeException("Not implemented");
+    private ChessBoard getMovedBoard(ChessBoard board, ChessMove move) {
+        ChessBoard newBoard = new ChessBoard(board);
+        ChessPiece movedPiece = newBoard.getPiece(move.getStartPosition());
+        if (move.getPromotionPiece() != null) {
+            movedPiece.SetPieceType(move.getPromotionPiece());
+        }
+        ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
+
+        newBoard.addPiece(endPos, movedPiece);
+        newBoard.removePiece(startPos);
+        return newBoard;
     }
 
-    private boolean isInCheckHelper(ChessBoard board, TeamColor color) {
+    /**
+     * Checks if a given team is in check on a given board
+     *
+     * @param color team color
+     * @return True if in check, otherwise false
+     */
+    boolean isInCheckHelper(ChessBoard board, TeamColor color) {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(i, j));

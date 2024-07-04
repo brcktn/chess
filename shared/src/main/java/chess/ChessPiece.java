@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ChessPiece {
 
     private final ChessGame.TeamColor _pieceColor;
-    private final ChessPiece.PieceType _pieceType;
+    private ChessPiece.PieceType _pieceType;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this._pieceColor = pieceColor;
@@ -31,6 +31,10 @@ public class ChessPiece {
         KNIGHT,
         ROOK,
         PAWN
+    }
+
+    public void SetPieceType(PieceType pieceType) {
+        _pieceType = pieceType;
     }
 
     /**
@@ -69,5 +73,28 @@ public class ChessPiece {
     @Override
     public int hashCode() {
         return Objects.hash(_pieceColor, _pieceType);
+    }
+
+    @Override
+    public String toString() {
+        if (getTeamColor() == ChessGame.TeamColor.WHITE) {
+            return switch (getPieceType()) {
+                case KING -> "K";
+                case QUEEN -> "Q";
+                case BISHOP -> "B";
+                case KNIGHT -> "N";
+                case ROOK -> "R";
+                case PAWN -> "P";
+            };
+        } else {
+            return switch (getPieceType()) {
+                case KING -> "k";
+                case QUEEN -> "q";
+                case BISHOP -> "b";
+                case KNIGHT -> "n";
+                case ROOK -> "r";
+                case PAWN -> "p";
+            };
+        }
     }
 }

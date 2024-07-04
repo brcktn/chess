@@ -16,8 +16,18 @@ public class ChessBoard {
         boardGrid = new ChessPiece[8][8];
     }
 
+    public ChessBoard(ChessBoard other) {
+        boardGrid = new ChessPiece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                boardGrid[i][j] = other.boardGrid[i][j];
+            }
+        }
+    }
+
     /**
      * Adds a chess piece to the chessboard
+     * if there is a piece already there, it is replaced
      *
      * @param position where to add the piece to
      * @param piece    the piece to add
@@ -96,5 +106,23 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(boardGrid);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 7; i >= 0; i--) {
+            builder.append("|");
+            for (int j = 0; j < 8; j++) {
+                if (boardGrid[i][j] == null) {
+                    builder.append(" ");
+                } else {
+                    builder.append(boardGrid[i][j]);
+                }
+                builder.append("|");
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 }
