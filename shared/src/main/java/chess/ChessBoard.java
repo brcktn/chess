@@ -19,9 +19,7 @@ public class ChessBoard {
     public ChessBoard(ChessBoard other) {
         boardGrid = new ChessPiece[8][8];
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                boardGrid[i][j] = other.boardGrid[i][j];
-            }
+            System.arraycopy(other.boardGrid[i], 0, boardGrid[i], 0, 8);
         }
     }
 

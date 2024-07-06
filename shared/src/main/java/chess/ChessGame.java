@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -65,6 +66,13 @@ public class ChessGame {
         }
         ChessBoard newBoard = getMovedBoard(getBoard(), move);
         setBoard(newBoard);
+
+        // updates team turn
+        if (turn == TeamColor.BLACK) {
+            turn = TeamColor.WHITE;
+        } else {
+            turn = TeamColor.BLACK;
+        }
     }
 
     /**
@@ -125,10 +133,19 @@ public class ChessGame {
      * @return True if allowed, otherwise false
      */
     private boolean isValidMove(ChessMove move) {
-        TeamColor moveTeam = board.getPiece(move.getStartPosition()).getTeamColor();
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null) {
+            return false;
+        }
+        TeamColor moveTeam = piece.getTeamColor();
         if (moveTeam != getTeamTurn()) {
             return false;
         }
+        Collection<ChessMove> validMoves = piece.pieceMoves(board, move.getStartPosition());
+        if (!validMoves.contains(move)) {
+            return false;
+        }
+
         ChessBoard potentialBoard = getMovedBoard(board, move);
         return !isInCheckHelper(potentialBoard, moveTeam);
     }

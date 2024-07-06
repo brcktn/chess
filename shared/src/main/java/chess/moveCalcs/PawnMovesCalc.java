@@ -100,7 +100,7 @@ public class PawnMovesCalc {
             if (col <= 7) {
                 capturePiece = board.getPiece(new ChessPosition(row-1, col+1));
                 if (capturePiece != null && capturePiece.getTeamColor() != color) {
-                    if (row != 7) {
+                    if (row != 2) {
                         moves.add(new ChessMove(currPosition, new ChessPosition(row-1, col+1), null));
                     } else {
                         moves.add(new ChessMove(currPosition, new ChessPosition(row-1, col+1), ChessPiece.PieceType.QUEEN));
