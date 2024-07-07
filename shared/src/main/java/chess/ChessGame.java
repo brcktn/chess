@@ -69,9 +69,20 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null) {
+            throw new InvalidMoveException();
+        }
+
+        TeamColor moveTeam = piece.getTeamColor();
+        if (moveTeam != getTeamTurn()) {
+            throw new InvalidMoveException();
+        }
+
         if (!isValidMove(move)) {
             throw new InvalidMoveException();
         }
+
         ChessBoard newBoard = getMovedBoard(getBoard(), move);
         setBoard(newBoard);
 
@@ -166,15 +177,13 @@ public class ChessGame {
         if (piece == null) {
             return false;
         }
-        TeamColor moveTeam = piece.getTeamColor();
-        if (moveTeam != getTeamTurn()) {
-            return false;
-        }
+
         Collection<ChessMove> validMoves = piece.pieceMoves(board, move.getStartPosition());
         if (!validMoves.contains(move)) {
             return false;
         }
 
+        TeamColor moveTeam = piece.getTeamColor();
         ChessBoard potentialBoard = getMovedBoard(board, move);
         return !isInCheckHelper(potentialBoard, moveTeam);
     }
