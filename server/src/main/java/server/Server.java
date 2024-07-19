@@ -1,12 +1,10 @@
 package server;
 
-import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import spark.*;
-import java.util.*;
-
-import java.util.HashMap;
 
 public class Server {
+
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -14,9 +12,6 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your server.endpoints and handle exceptions here.
-
-        //This line initializes the server and can be removed once you have a functioning endpoint
-
         Spark.delete("/db", this::clearDatabase);
         Spark.post("/user", this::registerUser);
         Spark.post("/session", this::login);
@@ -34,31 +29,31 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object clearDatabase(Request request, Response response) {
+    private Object clearDatabase(Request req, Response res) throws DataAccessException {
+        return "";
+    }
+
+    private Object registerUser(Request req, Response res) throws DataAccessException {
         return null;
     }
 
-    private Object registerUser(Request request, Response response) {
+    private Object login(Request req, Response res) throws DataAccessException {
         return null;
     }
 
-    private Object login(Request request, Response response) {
+    private Object logout(Request req, Response res) throws DataAccessException {
         return null;
     }
 
-    private Object logout(Request request, Response response) {
+    private Object listGames(Request req, Response res) throws DataAccessException {
         return null;
     }
 
-    private Object listGames(Request request, Response response) {
+    private Object createGame(Request req, Response res) throws DataAccessException {
         return null;
     }
 
-    private Object createGame(Request request, Response response) {
-        return null;
-    }
-
-    private Object joinGame(Request request, Response response) {
+    private Object joinGame(Request req, Response res) throws DataAccessException {
         return null;
     }
 
