@@ -25,9 +25,6 @@ public class MemoryDAO implements DataAccess{
 
     @Override
     public void createUser(UserData u) throws DataAccessException {
-        if (users.containsKey(u.username())) {
-            throw new DataAccessException("Username taken");
-        }
         users.put(u.username(), u);
     }
 
@@ -64,11 +61,10 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public void createAuth(AuthData auth) throws DataAccessException {
-        if (auths.containsKey(auth.username())) {
-            throw new DataAccessException("authToken already used");
-        }
-        auths.put(auth.username(), auth);
+    public AuthData createAuth(String username) throws DataAccessException {
+        AuthData newAuth = AuthData.generateAuthData(username);
+        auths.put(newAuth.authToken(), newAuth);
+        return newAuth;
     }
 
     @Override
