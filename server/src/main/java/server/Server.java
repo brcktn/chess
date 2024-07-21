@@ -2,9 +2,9 @@ package server;
 
 import dataaccess.*;
 import handler.ClearHandler;
+import handler.LoginHandler;
+import handler.LogoutHandler;
 import handler.RegisterHandler;
-import models.AuthData;
-import service.DataService;
 import spark.*;
 
 public class Server {
@@ -44,7 +44,7 @@ public class Server {
         }
     }
 
-    private Object registerUser(Request req, Response res) throws DataAccessException {
+    private Object registerUser(Request req, Response res) {
         try {
             res.status(200);
             return new RegisterHandler(dataAccess).register(req);
@@ -60,23 +60,42 @@ public class Server {
         }
     }
 
-    private Object login(Request req, Response res) throws DataAccessException {
+    private Object login(Request req, Response res) {
+        try {
+            res.status(200);
+            return new LoginHandler(dataAccess).login(req);
+        } catch (UnauthorizedException e) {
+            res.status(401);
+            return "{ \"message\": \"Error: unauthorized\" }";
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "";
+        }
+    }
+
+    private Object logout(Request req, Response res) {
+        try {
+            res.status(200);
+            new LogoutHandler(dataAccess).logout(req);
+            return "{}";
+        } catch (UnauthorizedException e) {
+            res.status(401);
+            return "{ \"message\": \"Error: unauthorized\" }";
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "";
+        }
+    }
+
+    private Object listGames(Request req, Response res) {
         return null;
     }
 
-    private Object logout(Request req, Response res) throws DataAccessException {
+    private Object createGame(Request req, Response res) {
         return null;
     }
 
-    private Object listGames(Request req, Response res) throws DataAccessException {
-        return null;
-    }
-
-    private Object createGame(Request req, Response res) throws DataAccessException {
-        return null;
-    }
-
-    private Object joinGame(Request req, Response res) throws DataAccessException {
+    private Object joinGame(Request req, Response res) {
         return null;
     }
 
