@@ -13,7 +13,7 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData register(UserData user) throws BadRequestException, DataAccessException {
+    public AuthData register(UserData user) throws BadRequestException, DataAccessException, AlreadyTakenException {
         if (user.password() == null || user.password().isEmpty() ||
                 user.username() == null || user.username().isEmpty()) {
             throw new BadRequestException("");

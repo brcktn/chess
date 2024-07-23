@@ -1,10 +1,7 @@
 package server;
 
 import dataaccess.*;
-import handler.ClearHandler;
-import handler.LoginHandler;
-import handler.LogoutHandler;
-import handler.RegisterHandler;
+import handler.*;
 import spark.*;
 
 public class Server {
@@ -92,7 +89,19 @@ public class Server {
     }
 
     private Object createGame(Request req, Response res) {
-        return null;
+        try {
+            res.status(200);
+            return new CreateGameHandler(dataAccess).createGame(req);
+        } catch (BadRequestException e) {
+            res.status(400);
+            return "{ \"message\": \"Error: bad request\" }";
+        } catch (UnauthorizedException e) {
+            res.status(401);
+            return "{ \"message\": \"Error: unauthorized\" }";
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "";
+        }
     }
 
     private Object joinGame(Request req, Response res) {
