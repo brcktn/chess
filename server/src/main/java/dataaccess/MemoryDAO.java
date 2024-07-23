@@ -2,11 +2,10 @@ package dataaccess;
 
 import models.AuthData;
 import models.GameData;
+import models.ListGamesResponse;
 import models.UserData;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class MemoryDAO implements DataAccess{
     private int nextGameID = 1;
@@ -48,8 +47,8 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public Collection<GameData> listGames() throws DataAccessException {
-        return games.values();
+    public ListGamesResponse listGames() throws DataAccessException {
+        return new ListGamesResponse(games.values());
     }
 
     @Override

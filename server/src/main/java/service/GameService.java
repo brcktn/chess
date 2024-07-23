@@ -4,6 +4,7 @@ import chess.ChessGame;
 import dataaccess.*;
 import models.GameData;
 import models.JoinGameRequest;
+import models.ListGamesResponse;
 
 public class GameService {
     DataAccess dataAccess;
@@ -25,7 +26,7 @@ public class GameService {
         return dataAccess.createGame(newGame);
     }
 
-    public void joinGame(JoinGameRequest request, String authToken) throws UnauthorizedException, DataAccessException, BadRequestException {
+    public void joinGame(JoinGameRequest request, String authToken) throws UnauthorizedException, DataAccessException, BadRequestException, AlreadyTakenException {
         if (dataAccess.getAuth(authToken) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
@@ -58,5 +59,13 @@ public class GameService {
             dataAccess.updateGame(new GameData(game.gameID(), game.whiteUsername(), username,
                                   game.gameName(), game.game()));
         }
+    }
+
+    public ListGamesResponse listGames(String authToken) throws DataAccessException, UnauthorizedException {
+        if (dataAccess.getAuth(authToken) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        return dataAccess.listGames();
     }
 }

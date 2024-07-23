@@ -2,9 +2,8 @@ package dataaccess;
 
 import models.AuthData;
 import models.GameData;
+import models.ListGamesResponse;
 import models.UserData;
-
-import java.util.Collection;
 
 public interface DataAccess {
     void clear() throws DataAccessException;
@@ -17,7 +16,7 @@ public interface DataAccess {
 
     GameData getGame(int gameID) throws DataAccessException;
 
-    Collection<GameData> listGames() throws DataAccessException;
+    ListGamesResponse listGames() throws DataAccessException;
 
     void updateGame(GameData game) throws DataAccessException;
 

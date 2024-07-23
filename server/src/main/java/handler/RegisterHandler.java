@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.AlreadyTakenException;
 import dataaccess.BadRequestException;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
@@ -16,7 +17,7 @@ public class RegisterHandler {
         this.dataAccess = dataAccess;
     }
 
-    public String register(Request req) throws DataAccessException, BadRequestException {
+    public String register(Request req) throws DataAccessException, BadRequestException, AlreadyTakenException {
         Gson gson = new Gson();
         UserData userData = gson.fromJson(req.body(), UserData.class);
         return gson.toJson(new UserService(dataAccess).register(userData));

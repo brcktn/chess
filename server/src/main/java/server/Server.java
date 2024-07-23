@@ -85,7 +85,16 @@ public class Server {
     }
 
     private Object listGames(Request req, Response res) {
-        return null;
+        try {
+            res.status(200);
+            return new ListGamesHandler(dataAccess).listGames(req);
+        } catch (UnauthorizedException e) {
+            res.status(401);
+            return "{ \"message\": \"Error: unauthorized\" }";
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "";
+        }
     }
 
     private Object createGame(Request req, Response res) {
