@@ -10,9 +10,9 @@ import java.util.HashMap;
 public class MemoryDAO implements DataAccess{
     private int nextGameID = 1;
 
-    final private HashMap<String, AuthData> auths = new HashMap<>();
+    final private HashMap<String,  AuthData> auths = new HashMap<>();
     final private HashMap<Integer, GameData> games = new HashMap<>();
-    final private HashMap<String, UserData> users = new HashMap<>();
+    final private HashMap<String,  UserData> users = new HashMap<>();
 
 
     @Override
@@ -23,17 +23,17 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public void createUser(UserData u) throws DataAccessException {
+    public void createUser(UserData u) {
         users.put(u.username(), u);
     }
 
     @Override
-    public UserData getUser(String username) throws DataAccessException {
+    public UserData getUser(String username) {
         return users.get(username);
     }
 
     @Override
-    public GameData createGame(GameData game) throws DataAccessException {
+    public GameData createGame(GameData game) {
         GameData newGame = new GameData(nextGameID++, game.whiteUsername(),
                                         game.blackUsername(), game.gameName(), game.game());
 
@@ -42,12 +42,12 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public GameData getGame(int gameID) throws DataAccessException {
+    public GameData getGame(int gameID) {
         return games.get(gameID);
     }
 
     @Override
-    public ListGamesResponse listGames() throws DataAccessException {
+    public ListGamesResponse listGames() {
         return new ListGamesResponse(games.values());
     }
 
@@ -60,14 +60,14 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public AuthData createAuth(String username) throws DataAccessException {
+    public AuthData createAuth(String username) {
         AuthData newAuth = AuthData.generateAuthData(username);
         auths.put(newAuth.authToken(), newAuth);
         return newAuth;
     }
 
     @Override
-    public AuthData getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) {
         return auths.get(authToken);
     }
 
