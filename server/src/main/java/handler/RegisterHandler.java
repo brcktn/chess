@@ -1,11 +1,10 @@
 package handler;
 
 import com.google.gson.Gson;
-import dataaccess.AlreadyTakenException;
-import dataaccess.BadRequestException;
+import service.AlreadyTakenException;
+import service.BadRequestException;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import models.AuthData;
 import models.UserData;
 import service.UserService;
 import spark.Request;

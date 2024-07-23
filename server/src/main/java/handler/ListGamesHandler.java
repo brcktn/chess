@@ -3,8 +3,7 @@ package handler;
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
-import models.ListGamesResponse;
+import service.UnauthorizedException;
 import service.GameService;
 import spark.Request;
 

@@ -2,6 +2,9 @@ package server;
 
 import dataaccess.*;
 import handler.*;
+import service.AlreadyTakenException;
+import service.BadRequestException;
+import service.UnauthorizedException;
 import spark.*;
 
 public class Server {

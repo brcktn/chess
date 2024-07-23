@@ -3,7 +3,10 @@ package handler;
 import com.google.gson.Gson;
 import dataaccess.*;
 import models.JoinGameRequest;
+import service.AlreadyTakenException;
+import service.BadRequestException;
 import service.GameService;
+import service.UnauthorizedException;
 import spark.Request;
 
 public class JoinGameHandler {

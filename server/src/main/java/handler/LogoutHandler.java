@@ -2,7 +2,7 @@ package handler;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import dataaccess.UnauthorizedException;
+import service.UnauthorizedException;
 import service.UserService;
 import spark.Request;
 
