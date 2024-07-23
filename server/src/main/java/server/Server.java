@@ -105,7 +105,23 @@ public class Server {
     }
 
     private Object joinGame(Request req, Response res) {
-        return null;
+        try {
+            res.status(200);
+            new JoinGameHandler(dataAccess).joinGame(req);
+            return "{}";
+        } catch (BadRequestException e) {
+            res.status(400);
+            return "{ \"message\": \"Error: bad request\" }";
+        } catch (UnauthorizedException e) {
+            res.status(401);
+            return "{ \"message\": \"Error: unauthorized\" }";
+        } catch (AlreadyTakenException e) {
+            res.status(403);
+            return "{ \"message\": \"Error: already taken\" }";
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "";
+        }
     }
 
 }
