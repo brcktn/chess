@@ -1,4 +1,4 @@
-package passoff.server.service;
+package service;
 
 import chess.ChessGame;
 import dataaccess.DataAccess;
@@ -9,7 +9,6 @@ import models.GameData;
 import models.JoinGameRequest;
 import models.UserData;
 import org.junit.jupiter.api.*;
-import service.*;
 
 public class ServiceTests {
     private static DataAccess dataAccess;
