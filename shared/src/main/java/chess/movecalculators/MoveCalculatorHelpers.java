@@ -5,7 +5,7 @@ import chess.*;
 import java.util.ArrayList;
 
 public class MoveCalculatorHelpers {
-    public static ArrayList<ChessMove> getMovesInDirection(ChessBoard board, ChessPosition pos, int NSdirection, int EWdirection) {
+    public static ArrayList<ChessMove> getMovesInDirection(ChessBoard board, ChessPosition pos, int verticalDirection, int horizontalDirection) {
         ArrayList<ChessMove> moves = new ArrayList<>();
 
         boolean keepMoving = true;
@@ -14,8 +14,8 @@ public class MoveCalculatorHelpers {
         int col = pos.getColumn();
 
         while (keepMoving) {
-            row += NSdirection;
-            col += EWdirection;
+            row += verticalDirection;
+            col += horizontalDirection;
 
             if (row < 1 || col < 1 || row > 8 || col > 8) {
                 break;
