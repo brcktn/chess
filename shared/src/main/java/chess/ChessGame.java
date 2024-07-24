@@ -225,7 +225,9 @@ public class ChessGame {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 // if the piece can capture the king, return true
-                if (pieceCanCaptureKing(board, color, i, j)) return true;
+                if (pieceCanCaptureKing(board, color, i, j)) {
+                    return true;
+                }
             }
         }
         return false;

@@ -26,7 +26,8 @@ public class GameService {
         return dataAccess.createGame(newGame);
     }
 
-    public void joinGame(JoinGameRequest request, String authToken) throws UnauthorizedException, DataAccessException, BadRequestException, AlreadyTakenException {
+    public void joinGame(JoinGameRequest request, String authToken) throws UnauthorizedException,
+            DataAccessException, BadRequestException, AlreadyTakenException {
         if (dataAccess.getAuth(authToken) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
