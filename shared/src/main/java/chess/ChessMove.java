@@ -9,30 +9,30 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessMove {
-    private final ChessPosition _startPos;
-    private final ChessPosition _endPos;
-    private final ChessPiece.PieceType _pieceType;
+    private final ChessPosition startPos;
+    private final ChessPosition endPos;
+    private final ChessPiece.PieceType pieceType;
 
     public ChessMove(ChessPosition startPosition,
                      ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
-        this._startPos = startPosition;
-        this._endPos = endPosition;
-        this._pieceType = promotionPiece;
+        this.startPos = startPosition;
+        this.endPos = endPosition;
+        this.pieceType = promotionPiece;
     }
 
     /**
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return _startPos;
+        return startPos;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        return _endPos;
+        return endPos;
     }
 
     /**
@@ -42,11 +42,11 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return _pieceType;
+        return pieceType;
     }
 
     public String toString() {
-        return "[" + _startPos + " -> " + _endPos + ", " + _pieceType + "]";
+        return "[" + startPos + " -> " + endPos + ", " + pieceType + "]";
     }
 
     @Override
@@ -54,11 +54,11 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(_startPos, chessMove._startPos) && Objects.equals(_endPos, chessMove._endPos) && _pieceType == chessMove._pieceType;
+        return Objects.equals(startPos, chessMove.startPos) && Objects.equals(endPos, chessMove.endPos) && pieceType == chessMove.pieceType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_startPos, _endPos, _pieceType);
+        return Objects.hash(startPos, endPos, pieceType);
     }
 }

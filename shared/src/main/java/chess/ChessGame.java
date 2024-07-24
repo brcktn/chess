@@ -10,20 +10,20 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private ChessBoard _board;
-    private TeamColor _turn;
+    private ChessBoard board;
+    private TeamColor turn;
 
     public ChessGame() {
-        _board = new ChessBoard();
-        _board.resetBoard();
-        _turn = TeamColor.WHITE;
+        board = new ChessBoard();
+        board.resetBoard();
+        turn = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        return _turn;
+        return turn;
     }
 
     /**
@@ -32,7 +32,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        _turn = team;
+        turn = team;
     }
 
     /**
@@ -52,7 +52,7 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> validMoves = new ArrayList<>();
-        Collection<ChessMove> moves = _board.getPiece(startPosition).pieceMoves(_board, startPosition);
+        Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
         for (ChessMove move : moves) {
             if (isValidMove(move)) {
                 validMoves.add(move);
@@ -69,7 +69,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessPiece piece = _board.getPiece(move.getStartPosition());
+        ChessPiece piece = board.getPiece(move.getStartPosition());
         if (piece == null) {
             throw new InvalidMoveException();
         }
@@ -101,7 +101,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        return isInCheckHelper(_board, teamColor);
+        return isInCheckHelper(board, teamColor);
     }
 
     /**
@@ -142,7 +142,7 @@ public class ChessGame {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition pos = new ChessPosition(i, j);
-                ChessPiece piece = _board.getPiece(pos);
+                ChessPiece piece = board.getPiece(pos);
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     allMoves.addAll(validMoves(pos));
                 }
@@ -158,7 +158,7 @@ public class ChessGame {
      * @param inputBoard the new board to use
      */
     public void setBoard(ChessBoard inputBoard) {
-        _board = inputBoard;
+        board = inputBoard;
     }
 
     /**
@@ -167,7 +167,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return _board;
+        return board;
     }
 
     /**
@@ -179,18 +179,18 @@ public class ChessGame {
      * @return True if allowed, otherwise false
      */
     private boolean isValidMove(ChessMove move) {
-        ChessPiece piece = _board.getPiece(move.getStartPosition());
+        ChessPiece piece = board.getPiece(move.getStartPosition());
         if (piece == null) {
             return false;
         }
 
-        Collection<ChessMove> validMoves = piece.pieceMoves(_board, move.getStartPosition());
+        Collection<ChessMove> validMoves = piece.pieceMoves(board, move.getStartPosition());
         if (!validMoves.contains(move)) {
             return false;
         }
 
         TeamColor moveTeam = piece.getTeamColor();
-        ChessBoard potentialBoard = getMovedBoard(_board, move);
+        ChessBoard potentialBoard = getMovedBoard(board, move);
         return !isInCheckHelper(potentialBoard, moveTeam);
     }
 
@@ -204,7 +204,7 @@ public class ChessGame {
         ChessBoard newBoard = new ChessBoard(board);
         ChessPiece movedPiece = newBoard.getPiece(move.getStartPosition());
         if (move.getPromotionPiece() != null) {
-            movedPiece.SetPieceType(move.getPromotionPiece());
+            movedPiece.setPieceType(move.getPromotionPiece());
         }
         ChessPosition startPos = move.getStartPosition();
         ChessPosition endPos = move.getEndPosition();

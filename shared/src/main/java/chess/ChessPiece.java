@@ -1,6 +1,6 @@
 package chess;
 
-import chess.moveCalculators.*;
+import chess.movecalculators.*;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -13,12 +13,12 @@ import java.util.Objects;
  */
 public class ChessPiece {
 
-    private final ChessGame.TeamColor _pieceColor;
-    private ChessPiece.PieceType _pieceType;
+    private final ChessGame.TeamColor pieceColor;
+    private ChessPiece.PieceType pieceType;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this._pieceColor = pieceColor;
-        this._pieceType = type;
+        this.pieceColor = pieceColor;
+        this.pieceType = type;
     }
 
     /**
@@ -33,22 +33,22 @@ public class ChessPiece {
         PAWN
     }
 
-    public void SetPieceType(PieceType pieceType) {
-        _pieceType = pieceType;
+    public void setPieceType(PieceType pieceType) {
+        this.pieceType = pieceType;
     }
 
     /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return _pieceColor;
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return _pieceType;
+        return pieceType;
     }
 
     /**
@@ -59,7 +59,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return switch (_pieceType) {
+        return switch (pieceType) {
             case PAWN -> PawnMoveCalculator.calculatePawnMoves(board, myPosition);
             case KNIGHT -> KnightMoveCalculator.calculateKnightMoves(board, myPosition);
             case ROOK -> RookMoveCalculator.calculateRookMoves(board, myPosition);
@@ -74,12 +74,12 @@ public class ChessPiece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece that = (ChessPiece) o;
-        return _pieceColor == that._pieceColor && _pieceType == that._pieceType;
+        return pieceColor == that.pieceColor && pieceType == that.pieceType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_pieceColor, _pieceType);
+        return Objects.hash(pieceColor, pieceType);
     }
 
     @Override

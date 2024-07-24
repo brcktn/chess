@@ -10,16 +10,16 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private final ChessPiece[][] _boardGrid;
+    private final ChessPiece[][] boardGrid;
 
     public ChessBoard() {
-        _boardGrid = new ChessPiece[8][8];
+        boardGrid = new ChessPiece[8][8];
     }
 
     public ChessBoard(ChessBoard other) {
-        _boardGrid = new ChessPiece[8][8];
+        boardGrid = new ChessPiece[8][8];
         for (int i = 0; i < 8; i++) {
-            System.arraycopy(other._boardGrid[i], 0, _boardGrid[i], 0, 8);
+            System.arraycopy(other.boardGrid[i], 0, boardGrid[i], 0, 8);
         }
     }
 
@@ -31,7 +31,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        _boardGrid[position.getRow() - 1][position.getColumn() - 1] = piece;
+        boardGrid[position.getRow() - 1][position.getColumn() - 1] = piece;
     }
 
     /**
@@ -40,7 +40,7 @@ public class ChessBoard {
      * @param position where to remove piece from
      */
     public void removePiece(ChessPosition position) {
-        _boardGrid[position.getRow() - 1][position.getColumn() - 1] = null;
+        boardGrid[position.getRow() - 1][position.getColumn() - 1] = null;
     }
 
     /**
@@ -51,7 +51,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return _boardGrid[position.getRow() - 1][position.getColumn() - 1];
+        return boardGrid[position.getRow() - 1][position.getColumn() - 1];
     }
 
     /**
@@ -98,12 +98,12 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(_boardGrid, that._boardGrid);
+        return Objects.deepEquals(boardGrid, that.boardGrid);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(_boardGrid);
+        return Arrays.deepHashCode(boardGrid);
     }
 
     @Override
@@ -112,10 +112,10 @@ public class ChessBoard {
         for (int i = 7; i >= 0; i--) {
             builder.append("|");
             for (int j = 0; j < 8; j++) {
-                if (_boardGrid[i][j] == null) {
+                if (boardGrid[i][j] == null) {
                     builder.append(" ");
                 } else {
-                    builder.append(_boardGrid[i][j]);
+                    builder.append(boardGrid[i][j]);
                 }
                 builder.append("|");
             }
