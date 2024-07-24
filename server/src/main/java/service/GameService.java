@@ -17,7 +17,7 @@ public class GameService {
             throw new UnauthorizedException("Error: unauthorized");
         }
 
-        if (gameData.gameName() == null) {
+        if (gameData.gameName() == null || gameData.gameName().isEmpty()) {
             throw new BadRequestException("Error: bad request");
         }
 
