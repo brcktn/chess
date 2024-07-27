@@ -4,6 +4,7 @@ import chess.ChessGame;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDAO;
+import dataaccess.MySqlDAO;
 import models.AuthData;
 import models.GameData;
 import models.JoinGameRequest;
@@ -19,8 +20,8 @@ public class ServiceTests {
     static String email;
 
     @BeforeAll
-    public static void setup() {
-        dataAccess = new MemoryDAO();
+    public static void setup() throws DataAccessException {
+        dataAccess = new MySqlDAO();
         username = "user1001";
         password = "drowssap";
         email = "user@gmail.com";

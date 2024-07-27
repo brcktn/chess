@@ -7,10 +7,17 @@ import service.BadRequestException;
 import service.UnauthorizedException;
 import spark.*;
 
+import java.io.IOException;
+
 public class Server {
-    private final DataAccess dataAccess = new MemoryDAO();
+    private DataAccess dataAccess;
 
     public int run(int desiredPort) {
+        try {
+            dataAccess = new MySqlDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
