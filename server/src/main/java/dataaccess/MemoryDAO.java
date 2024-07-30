@@ -21,10 +21,9 @@ public class MemoryDAO implements DataAccess{
         games.clear();
         users.clear();
     }
-
     @Override
-    public void createUser(UserData u) {
-        users.put(u.username(), u);
+    public void createUser(UserData userData) {
+        users.put(userData.username(), userData);
     }
 
     @Override

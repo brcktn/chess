@@ -1,15 +1,18 @@
 package dataaccess;
 
+import com.google.gson.Gson;
 import models.AuthData;
 import models.GameData;
 import models.ListGamesResponse;
 import models.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
+
+import java.sql.Statement;
 
 public class MySqlDAO implements DataAccess {
 
@@ -19,24 +22,76 @@ public class MySqlDAO implements DataAccess {
 
     @Override
     public void clear() throws DataAccessException {
-        executeUpdate("TRUNCATE TABLE authData");
-        executeUpdate("TRUNCATE TABLE gameData");
-        executeUpdate("TRUNCATE TABLE userData");
+        try (Connection conn = DatabaseManager.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.addBatch("TRUNCATE TABLE authData");
+            stmt.addBatch("TRUNCATE TABLE gameData");
+            stmt.addBatch("TRUNCATE TABLE userData");
+
+            stmt.executeBatch();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public void createUser(UserData u) throws DataAccessException {
+    public void createUser(UserData userData) throws DataAccessException {
+        String sql = "INSERT INTO userData (username, hash, email) VALUES (?, ?, ?)";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
+            pstmt.setString(1, userData.username());
+            pstmt.setString(2, hashedPassword);
+            pstmt.setString(3, userData.email());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
 
     }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        String sql = "SELECT * FROM userData WHERE username = ?;";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+            String hash = rs.getString("hash");
+            String email = rs.getString("email");
+
+            return new UserData(username, hash, email);
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
-        return null;
+        String sql = "INSERT INTO gameData (whiteUsername, blackUsername, gameName, json) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
+            Gson gson = new Gson();
+            String gameJson = gson.toJson(game.game());
+
+            pstmt.setString(1, game.whiteUsername());
+            pstmt.setString(2, game.blackUsername());
+            pstmt.setString(3, game.gameName());
+            pstmt.setString(4, gameJson);
+
+            pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+            int gameId = rs.getInt(1);
+
+            return new GameData(gameId, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
@@ -95,7 +150,7 @@ public class MySqlDAO implements DataAccess {
     private final String[] createUserStatement = {
         """
         CREATE TABLE IF NOT EXISTS userData (
-            username VARCHAR(255) NOT NULL,
+            username VARCHAR(255) UNIQUE NOT NULL,
             hash VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             PRIMARY KEY (username)
@@ -106,55 +161,24 @@ public class MySqlDAO implements DataAccess {
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createAuthStatement) {
-                try (var stmt = conn.prepareStatement(statement)) {
-                    stmt.execute();
-                }
-            }
-            
-            for (var statement : createGameStatement) {
-                try (var stmt = conn.prepareStatement(statement)) {
-                    stmt.execute();
-                }
+        try (Connection conn = DatabaseManager.getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            for (String statement : createAuthStatement) {
+                stmt.execute(statement);
             }
 
-            for (var statement : createUserStatement) {
-                try (var stmt = conn.prepareStatement(statement)) {
-                    stmt.execute();
-                }
+            for (String statement : createGameStatement) {
+                stmt.execute(statement);
             }
 
+            for (String statement : createUserStatement) {
+                stmt.execute(statement);
+            }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
-    }
 
-    private int executeUpdate(String sql, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof AuthData p) ps.setString(i + 1, p.toString());
-                    else if (param instanceof GameData p) ps.setString(i + 1, p.toString());
-                    else if (param instanceof UserData p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
-            }
-
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
 }

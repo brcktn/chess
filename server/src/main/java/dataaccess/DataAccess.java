@@ -8,7 +8,7 @@ import models.UserData;
 public interface DataAccess {
     void clear() throws DataAccessException;
 
-    void createUser(UserData u) throws DataAccessException;
+    void createUser(UserData userData) throws DataAccessException;
 
     UserData getUser(String username) throws DataAccessException;
 
