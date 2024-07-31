@@ -21,7 +21,7 @@ public class ServiceTests {
 
     @BeforeAll
     public static void setup() throws DataAccessException {
-        dataAccess = new MySqlDAO();
+        dataAccess = new MemoryDAO();
         username = "user1001";
         password = "drowssap";
         email = "user@gmail.com";
@@ -49,7 +49,6 @@ public class ServiceTests {
         Assertions.assertNull(dataAccess.getUser(username));
         Assertions.assertNull(dataAccess.getAuth(authToken));
         Assertions.assertNull(dataAccess.getGame(gameID));
-
     }
 
     @Test
