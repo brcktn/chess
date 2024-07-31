@@ -6,6 +6,7 @@ import models.ListGamesResponse;
 import models.UserData;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MemoryDAO implements DataAccess{
     private int nextGameID = 1;
@@ -76,5 +77,10 @@ public class MemoryDAO implements DataAccess{
             throw new DataAccessException("authToken does not exist");
         }
         auths.remove(authToken);
+    }
+
+    @Override
+    public boolean checkPassword(UserData user) throws DataAccessException {
+        return (Objects.equals(user.password(), users.get(user.username()).password()));
     }
 }

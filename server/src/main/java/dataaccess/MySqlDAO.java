@@ -43,6 +43,8 @@ public class MySqlDAO implements DataAccess {
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
+            boolean test = BCrypt.checkpw(userData.password(), hashedPassword);
+
             pstmt.setString(1, userData.username());
             pstmt.setString(2, hashedPassword);
             pstmt.setString(3, userData.email());
@@ -162,22 +164,83 @@ public class MySqlDAO implements DataAccess {
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
+        if (getGame(game.gameID()) == null) {
+            throw new DataAccessException("Game not found");
+        }
+        String sql = "UPDATE gameData SET gameJson = ? WHERE gameID = ?;";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ChessGame chessGame = game.game();
+            Gson gson = new Gson();
+            String gameJson = gson.toJson(chessGame);
+            pstmt.setString(1, gameJson);
+            pstmt.setInt(2, game.gameID());
 
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
-        return null;
+        AuthData authData = AuthData.generateAuthData(username);
+        String sql = "INSERT INTO authData (authToken, username) VALUES (?, ?);";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, authData.authToken());
+            pstmt.setString(2, username);
+
+            pstmt.executeUpdate();
+
+            return authData;
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
-        return null;
+        String sql = "SELECT * FROM authData WHERE authToken = ?;";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, authToken);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String username = rs.getString("username");
+                return new AuthData(authToken, username);
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
+        if (getAuth(authToken) == null) {
+            throw new DataAccessException("Auth token not found");
+        }
+        String sql = "DELETE FROM authData WHERE authToken = ?;";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, authToken);
+            pstmt.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean checkPassword(UserData user) throws DataAccessException {
+        String password = user.password();
+        String hash = getUser(user.username()).password();
+
+        return BCrypt.checkpw(password, hash);
     }
 
 

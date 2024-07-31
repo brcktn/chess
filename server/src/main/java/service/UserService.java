@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import models.AuthData;
 import models.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class UserService {
         if (dataAccess.getUser(user.username()) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        if (!Objects.equals(user.password(), dataAccess.getUser(user.username()).password())) {
+        if (!dataAccess.checkPassword(user)) {
             throw new UnauthorizedException("Error: unauthorized");
         }
 

@@ -21,7 +21,7 @@ public class ServiceTests {
 
     @BeforeAll
     public static void setup() throws DataAccessException {
-        dataAccess = new MemoryDAO();
+        dataAccess = new MySqlDAO();
         username = "user1001";
         password = "drowssap";
         email = "user@gmail.com";
