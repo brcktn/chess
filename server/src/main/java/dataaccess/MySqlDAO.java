@@ -38,6 +38,9 @@ public class MySqlDAO implements DataAccess {
 
     @Override
     public void createUser(UserData userData) throws DataAccessException {
+        if (getUser(userData.username()) != null) {
+            throw new DataAccessException("User already exists");
+        }
         String sql = "INSERT INTO userData (username, hash, email) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
