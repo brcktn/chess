@@ -137,7 +137,7 @@ public class MySqlDAO implements DataAccess {
 
     @Override
     public ListGamesResponse listGames() throws DataAccessException {
-        String sql = "";
+        String sql = "SELECT * FROM gameData;";
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
@@ -163,18 +163,21 @@ public class MySqlDAO implements DataAccess {
     }
 
     @Override
-    public void updateGame(GameData game) throws DataAccessException {
-        if (getGame(game.gameID()) == null) {
+    public void updateGame(GameData gameData) throws DataAccessException {
+        if (getGame(gameData.gameID()) == null) {
             throw new DataAccessException("Game not found");
         }
-        String sql = "UPDATE gameData SET gameJson = ? WHERE gameID = ?;";
+        String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername = ?, gameName = ?, gameJson = ? WHERE gameID = ?;";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            ChessGame chessGame = game.game();
+            ChessGame chessGame = gameData.game();
             Gson gson = new Gson();
             String gameJson = gson.toJson(chessGame);
-            pstmt.setString(1, gameJson);
-            pstmt.setInt(2, game.gameID());
+            pstmt.setString(1, gameData.whiteUsername());
+            pstmt.setString(2, gameData.blackUsername());
+            pstmt.setString(3, gameData.gameName());
+            pstmt.setString(4, gameJson);
+            pstmt.setInt(5, gameData.gameID());
 
             pstmt.executeUpdate();
 
@@ -185,6 +188,9 @@ public class MySqlDAO implements DataAccess {
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
+        if (getUser(username) == null) {
+            return null;
+        }
         AuthData authData = AuthData.generateAuthData(username);
         String sql = "INSERT INTO authData (authToken, username) VALUES (?, ?);";
         try (Connection conn = DatabaseManager.getConnection();
@@ -248,7 +254,7 @@ public class MySqlDAO implements DataAccess {
         """
         CREATE TABLE IF NOT EXISTS authData (
             authToken VARCHAR(64) UNIQUE NOT NULL,
-            username VARCHAR(64) UNIQUE NOT NULL,
+            username VARCHAR(64) NOT NULL,
             PRIMARY KEY (authToken)
         );
         """

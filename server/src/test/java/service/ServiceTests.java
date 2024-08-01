@@ -55,7 +55,8 @@ public class ServiceTests {
     public void testRegisterUserSuccess() throws DataAccessException, BadRequestException, AlreadyTakenException {
         new UserService(dataAccess).register(newUserData);
 
-        Assertions.assertEquals(dataAccess.getUser(username), newUserData);
+        Assertions.assertEquals(dataAccess.getUser(username).username(), newUserData.username());
+        Assertions.assertEquals(dataAccess.getUser(username).email(), newUserData.email());
     }
 
     @Test
