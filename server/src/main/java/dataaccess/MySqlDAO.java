@@ -81,19 +81,19 @@ public class MySqlDAO implements DataAccess {
     }
 
     @Override
-    public GameData createGame(GameData game) throws DataAccessException {
+    public GameData createGame(GameData gameData) throws DataAccessException {
         String sql = "INSERT INTO gameData (whiteUsername, blackUsername, gameName, gameJson) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, RETURN_GENERATED_KEYS)) {
-            if (game.game() == null) {
+            if (gameData.game() == null) {
                 throw new DataAccessException("Invalid game");
             }
             Gson gson = new Gson();
-            String gameJson = gson.toJson(game.game());
+            String gameJson = gson.toJson(gameData.game());
 
-            pstmt.setString(1, game.whiteUsername());
-            pstmt.setString(2, game.blackUsername());
-            pstmt.setString(3, game.gameName());
+            pstmt.setString(1, gameData.whiteUsername());
+            pstmt.setString(2, gameData.blackUsername());
+            pstmt.setString(3, gameData.gameName());
             pstmt.setString(4, gameJson);
 
             pstmt.executeUpdate();
@@ -102,7 +102,7 @@ public class MySqlDAO implements DataAccess {
             rs.next();
             int gameId = rs.getInt(1);
 
-            return new GameData(gameId, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+            return new GameData(gameId, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
 
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
