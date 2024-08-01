@@ -33,9 +33,9 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public GameData createGame(GameData game) {
-        GameData newGame = new GameData(nextGameID++, game.whiteUsername(),
-                                        game.blackUsername(), game.gameName(), game.game());
+    public GameData createGame(GameData gameData) {
+        GameData newGame = new GameData(nextGameID++, gameData.whiteUsername(),
+                                        gameData.blackUsername(), gameData.gameName(), gameData.game());
 
         games.put(newGame.gameID(), newGame);
         return newGame;
@@ -80,7 +80,7 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public boolean checkPassword(UserData user) throws DataAccessException {
+    public boolean checkPassword(UserData user) {
         return (Objects.equals(user.password(), users.get(user.username()).password()));
     }
 }
