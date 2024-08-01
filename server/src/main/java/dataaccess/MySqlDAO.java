@@ -243,9 +243,9 @@ public class MySqlDAO implements DataAccess {
     }
 
     @Override
-    public boolean checkPassword(UserData user) throws DataAccessException {
-        String password = user.password();
-        String hash = getUser(user.username()).password();
+    public boolean checkPassword(UserData userData) throws DataAccessException {
+        String password = userData.password();
+        String hash = getUser(userData.username()).password();
 
         return BCrypt.checkpw(password, hash);
     }

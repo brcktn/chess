@@ -52,11 +52,11 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public void updateGame(GameData game) throws DataAccessException {
-        if (!games.containsKey(game.gameID())) {
+    public void updateGame(GameData gameData) throws DataAccessException {
+        if (!games.containsKey(gameData.gameID())) {
             throw new DataAccessException("Game not found");
         }
-        games.replace(game.gameID(), game);
+        games.replace(gameData.gameID(), gameData);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MemoryDAO implements DataAccess{
     }
 
     @Override
-    public boolean checkPassword(UserData user) {
-        return (Objects.equals(user.password(), users.get(user.username()).password()));
+    public boolean checkPassword(UserData userData) {
+        return (Objects.equals(userData.password(), users.get(userData.username()).password()));
     }
 }

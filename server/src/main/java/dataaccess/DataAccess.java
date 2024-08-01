@@ -31,17 +31,42 @@ public interface DataAccess {
      */
     GameData createGame(GameData gameData) throws DataAccessException;
 
+    /**
+     * @return GameData for game with given ID, null if ID does not exist
+     */
     GameData getGame(int gameID) throws DataAccessException;
 
+    /**
+     * @return ListGamesResponse object including all games in database
+     */
     ListGamesResponse listGames() throws DataAccessException;
 
-    void updateGame(GameData game) throws DataAccessException;
+    /**
+     * Replaces data for given game in database with gameData
+     * @throws DataAccessException if gameID for gameData doesn't exist
+     */
+    void updateGame(GameData gameData) throws DataAccessException;
 
+    /**
+     * @return new authData for given username, null if user doesn't exist
+     */
     AuthData createAuth(String username) throws DataAccessException;
 
+    /**
+     *
+     * @return authData including username associated with given authToken, null if authToken doesn't exist
+     */
     AuthData getAuth(String authToken) throws DataAccessException;
 
+    /**
+     * removes authData associated with given authToken
+     * @throws DataAccessException if authToken doesn't exist
+     */
     void deleteAuth(String authToken) throws DataAccessException;
 
-    boolean checkPassword(UserData user) throws DataAccessException;
+    /**
+     * @param userData userData for given user
+     * @return True if password matches hashed password in database
+     */
+    boolean checkPassword(UserData userData) throws DataAccessException;
 }
