@@ -36,9 +36,9 @@ public class MySqlDAOTests {
 
     @Test
     void testClear() throws DataAccessException {
+        dataAccess.createUser(newUserData);
         int gameID = dataAccess.createGame(newGameData).gameID();
         String authToken = dataAccess.createAuth(username).authToken();
-        dataAccess.createUser(newUserData);
 
         new DataService(dataAccess).clear();
 
