@@ -15,14 +15,6 @@ public class MySqlDAOTests {
     static String password;
     static String email;
 
-    @BeforeAll
-    public static void setup() throws DataAccessException {
-        dataAccess = new MySqlDAO();
-        username = "user1001";
-        password = "drowssap";
-        email = "user@gmail.com";
-    }
-
     @BeforeEach
     public void beforeEach() {
         newUserData = new UserData(username, password, email);
@@ -34,17 +26,25 @@ public class MySqlDAOTests {
         dataAccess.clear();
     }
 
+    @BeforeAll
+    public static void setup() throws DataAccessException {
+        dataAccess = new MySqlDAO();
+        username = "user1001";
+        password = "drowssap";
+        email = "user@gmail.com";
+    }
+
     @Test
     void testClear() throws DataAccessException {
-        dataAccess.createUser(newUserData);
-        String authToken = dataAccess.createAuth(username).authToken();
         int gameID = dataAccess.createGame(newGameData).gameID();
+        String authToken = dataAccess.createAuth(username).authToken();
+        dataAccess.createUser(newUserData);
 
         new DataService(dataAccess).clear();
 
-        Assertions.assertNull(dataAccess.getUser(username));
-        Assertions.assertNull(dataAccess.getAuth(authToken));
         Assertions.assertNull(dataAccess.getGame(gameID));
+        Assertions.assertNull(dataAccess.getAuth(authToken));
+        Assertions.assertNull(dataAccess.getUser(username));
     }
 
     @Test
