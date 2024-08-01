@@ -5,7 +5,6 @@ import models.GameData;
 import models.UserData;
 import org.junit.jupiter.api.*;
 import org.mindrot.jbcrypt.BCrypt;
-import service.BadRequestException;
 import service.DataService;
 
 public class MySqlDAOTests {
@@ -57,7 +56,7 @@ public class MySqlDAOTests {
     }
 
     @Test
-    void testCreateUserNoUsername() throws DataAccessException {
+    void testCreateUserNoUsername() {
         UserData badUserData = new UserData(null, "pass", email);
         Assertions.assertThrows(DataAccessException.class, () ->
                 dataAccess.createUser(badUserData));
@@ -163,7 +162,7 @@ public class MySqlDAOTests {
     }
 
     @Test
-    void testDeleteAuthNotFound() throws DataAccessException {
+    void testDeleteAuthNotFound() {
         Assertions.assertThrows(DataAccessException.class, () ->
                 dataAccess.deleteAuth("badAuth"));
     }

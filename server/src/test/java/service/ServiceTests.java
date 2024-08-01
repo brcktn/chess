@@ -3,7 +3,6 @@ package service;
 import chess.ChessGame;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryDAO;
 import dataaccess.MySqlDAO;
 import models.AuthData;
 import models.GameData;

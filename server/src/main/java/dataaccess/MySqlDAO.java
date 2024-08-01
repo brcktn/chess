@@ -11,7 +11,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class MySqlDAO implements DataAccess {
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
-            boolean test = BCrypt.checkpw(userData.password(), hashedPassword);
 
             pstmt.setString(1, userData.username());
             pstmt.setString(2, hashedPassword);
