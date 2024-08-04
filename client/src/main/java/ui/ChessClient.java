@@ -13,7 +13,7 @@ public class ChessClient {
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
-        UI ui = new LoginUI(this);
+        UI ui = new LoginUI(this, server);
     }
 
     public String eval(String input) {
@@ -26,10 +26,10 @@ public class ChessClient {
     }
 
     public void setAsLoggedIn() {
-        ui = new MainUI(this);
+        ui = new MainUI(this, server);
     }
 
     public void setAsLoggedOut() {
-        ui = new LoginUI(this);
+        ui = new LoginUI(this, server);
     }
 }

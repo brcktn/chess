@@ -2,22 +2,30 @@ package ui;
 
 import chess.ChessBoard;
 import models.UserData;
+import server.ResponseException;
+import server.ServerFacade;
 
 public class LoginUI implements UI {
     private final ChessClient chessClient;
+    private final ServerFacade server;
 
-    public LoginUI(ChessClient chessClient) {
+    public LoginUI(ChessClient chessClient, ServerFacade server) {
         this.chessClient = chessClient;
+        this.server = server;
     }
 
     @Override
     public String eval(String cmd, String[] args) {
-        return switch (cmd) {
-            case "login" -> login(args);
-            case "register" -> register(args);
-            case "quit" -> "quit";
-            default -> help();
-        };
+        try {
+            return switch (cmd) {
+                case "login" -> login(args);
+                case "register" -> register(args);
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } catch (Throwable e) {
+            return e.getMessage();
+        }
     }
 
     @Override
@@ -30,23 +38,24 @@ public class LoginUI implements UI {
         """;
     }
 
-    private String login(String[] args) {
+    private String login(String[] args) throws ResponseException {
         if (args.length != 2) {
             return "login <username> <password>";
         }
         UserData req = new UserData(args[0], args[1], null);
-
+        server.login(req);
         chessClient.setAsLoggedIn();
-        return null;
+        return "Logged in!";
     }
 
-    private String register(String[] args) {
+    private String register(String[] args) throws ResponseException {
         if (args.length != 3) {
             return "register <username> <password> <email>";
         }
         UserData req = new UserData(args[0], args[1], args[2]);
+        server.register(req);
 
         chessClient.setAsLoggedIn();
-        return null;
+        return "Registered!";
     }
 }

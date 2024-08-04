@@ -1,12 +1,17 @@
 package ui;
 
+import server.ResponseException;
+import server.ServerFacade;
+
 import java.util.Arrays;
 
 public class MainUI implements UI {
     private ChessClient chessClient;
+    private ServerFacade server;
 
-    public MainUI(ChessClient chessClient) {
+    public MainUI(ChessClient chessClient, ServerFacade server) {
         this.chessClient = chessClient;
+        this.server = server;
     }
 
     @Override
@@ -30,8 +35,10 @@ public class MainUI implements UI {
         return "";
     }
 
-    private String logout() {
-        return null;
+    private String logout() throws ResponseException {
+        server.logout();
+        chessClient.setAsLoggedOut();
+        return "Logged out!";
     }
 
     private String createGame(String[] args) {
