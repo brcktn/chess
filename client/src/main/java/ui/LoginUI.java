@@ -22,7 +22,12 @@ public class LoginUI implements UI {
 
     @Override
     public String help() {
-        return "";
+        return """
+        Login:    "login" <username> <password>
+        Register: "register" <username> <password> <email>
+        Quit:     "quit"
+        Help:     "help"
+        """;
     }
 
     private String login(String[] args) {
