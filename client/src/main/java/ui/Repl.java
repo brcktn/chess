@@ -1,7 +1,5 @@
 package ui;
 
-import data.ChessClient;
-
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -15,7 +13,7 @@ public class Repl {
 
     public void run() {
         System.out.println("\uD83D\uDC36 Welcome to the chess. Sign in to start.");
-        System.out.print(client.help());
+        System.out.print(client.eval("help"));
 
         Scanner scanner = new Scanner(System.in);
         String result = "";
