@@ -1,19 +1,47 @@
 package ui;
 
+import chess.ChessBoard;
+import models.UserData;
+
 public class LoginUI implements UI {
+    private final ChessClient chessClient;
+
+    public LoginUI(ChessClient chessClient) {
+        this.chessClient = chessClient;
+    }
+
     @Override
     public String eval(String cmd, String[] args) {
-        try {
-            return switch (cmd) {
-                case "logout" -> login();
-                default -> help();
-            };
-        } catch (Throwable e) {
-            return e.getMessage();
-        }    }
+        return switch (cmd) {
+            case "login" -> login(args);
+            case "register" -> register(args);
+            case "quit" -> "quit";
+            default -> help();
+        };
+    }
 
     @Override
     public String help() {
         return "";
+    }
+
+    private String login(String[] args) {
+        if (args.length != 2) {
+            return "login <username> <password>";
+        }
+        UserData req = new UserData(args[0], args[1], null);
+
+        chessClient.setAsLoggedIn();
+        return null;
+    }
+
+    private String register(String[] args) {
+        if (args.length != 3) {
+            return "register <username> <password> <email>";
+        }
+        UserData req = new UserData(args[0], args[1], args[2]);
+
+        chessClient.setAsLoggedIn();
+        return null;
     }
 }
