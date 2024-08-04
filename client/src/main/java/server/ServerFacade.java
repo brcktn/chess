@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import models.UserData;
+import models.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,17 +19,31 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    private UserData login(UserData userData) throws ResponseException {
-        return this.makeRequest("POST", "/session", userData, UserData.class);
+    public AuthData login(UserData req) throws ResponseException {
+        return makeRequest("POST", "/session", req, AuthData.class);
     }
 
-    private void logout() throws ResponseException {
-        this.makeRequest("DELETE", "/session", null, null);
+    public void logout() throws ResponseException {
+        makeRequest("DELETE", "/session", null, null);
     }
 
+    public AuthData register(UserData req) throws ResponseException {
+        return makeRequest("POST", "/user", req, AuthData.class);
+    }
 
+    public ListGamesResponse listGames(AuthData req) throws ResponseException {
+        return makeRequest("GET", "/game", req, ListGamesResponse.class);
+    }
 
-    private <T> T makeRequest(String method, String path, T req, Class<T> responseType) throws ResponseException {
+    public void joinGame(JoinGameRequest req) throws ResponseException {
+        makeRequest("PUT", "/game", req, null);
+    }
+
+    public GameData createGame(GameData req) throws ResponseException {
+        return makeRequest("POST", "/game", req, GameData.class);
+    }
+
+    private <T> T makeRequest(String method, String path, Object req, Class<T> responseType) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path).toURL());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
