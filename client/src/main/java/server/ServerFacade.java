@@ -19,6 +19,10 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
+    public void clearDatabase()  throws ResponseException {
+        makeRequest("DELETE", "/db", null, null);
+    }
+
     public AuthData login(UserData req) throws ResponseException {
         return makeRequest("POST", "/session", req, AuthData.class);
     }

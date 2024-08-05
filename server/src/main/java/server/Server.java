@@ -60,10 +60,10 @@ public class Server {
             return "{ \"message\": \"Error: bad request\" }";
         } catch (AlreadyTakenException e) {
             res.status(403);
-            return "{ \"message\": \"Error: bad request\" }";
+            return "{ \"message\": \"Error: username taken\" }";
         } catch (DataAccessException e) {
             res.status(500);
-            return "{ \"message\": \"Error: (description of error)\" }";
+            return "{ \"message\": \"Error\" }";
         }
     }
 
