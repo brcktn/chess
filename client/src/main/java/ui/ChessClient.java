@@ -8,6 +8,7 @@ public class ChessClient {
 
     private final String serverUrl;
     private final ServerFacade server;
+    private String authToken;
     UI ui;
 
     public ChessClient(String serverUrl) {
@@ -31,5 +32,13 @@ public class ChessClient {
 
     public void setAsLoggedOut() {
         ui = new LoginUI(this, server);
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
+    public String getAuthToken() {
+        return authToken;
     }
 }

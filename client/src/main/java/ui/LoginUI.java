@@ -43,7 +43,7 @@ public class LoginUI implements UI {
             return "login <username> <password>";
         }
         UserData req = new UserData(args[0], args[1], null);
-        server.login(req);
+        chessClient.setAuthToken(server.login(req).authToken());
         chessClient.setAsLoggedIn();
         return "Logged in!";
     }
@@ -53,8 +53,7 @@ public class LoginUI implements UI {
             return "register <username> <password> <email>";
         }
         UserData req = new UserData(args[0], args[1], args[2]);
-        server.register(req);
-
+        chessClient.setAuthToken(server.register(req).authToken());
         chessClient.setAsLoggedIn();
         return "Registered!";
     }
