@@ -79,7 +79,7 @@ public class MainUI implements UI {
             return new ChessGame().toString();
         } else if (args[1].equalsIgnoreCase("black")) {
             serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.BLACK, gameId));
-            return new ChessGame().getBoard().toString();
+            return ChessRender.render(new ChessGame().getBoard());
         }
         return """
                 invalid team color
@@ -88,6 +88,6 @@ public class MainUI implements UI {
     }
 
     private String observeGame(String[] args) {
-        return new ChessGame().getBoard().toString();
+        return ChessRender.render(new ChessGame().getBoard());
     }
 }
