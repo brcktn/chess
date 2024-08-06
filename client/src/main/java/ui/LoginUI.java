@@ -51,7 +51,6 @@ public class LoginUI implements UI {
             return "register <username> <password> <email>";
         }
         UserData req = new UserData(args[0], args[1], args[2]);
-        var a = req;
         chessClient.setAsLoggedIn(serverFacade.register(req).authToken());
         return "Registered!";
     }

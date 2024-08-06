@@ -6,14 +6,12 @@ import java.util.Arrays;
 
 public class ChessClient {
 
-    private final String serverUrl;
     private final ServerFacade server;
     private String authToken;
     UI ui;
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl, this);
-        this.serverUrl = serverUrl;
         this.ui = new LoginUI(this, server);
     }
 
