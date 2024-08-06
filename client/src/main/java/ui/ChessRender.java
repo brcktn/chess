@@ -10,6 +10,11 @@ import static ui.EscapeSequences.*;
 public class ChessRender {
 
     private static final String newLine = SET_BG_COLOR_BLACK + "\n";
+
+    /**
+     * @param chessBoard board to render
+     * @return string which when printed looks like a chess board
+     */
     public static String render(ChessBoard chessBoard) {
         StringBuilder builder = new StringBuilder();
 

@@ -111,4 +111,10 @@ public class ServerFacadeTests {
         });
     }
 
+    @Test
+    public void testListGamesInvalid() {
+        Assertions.assertThrows(ResponseException.class, () ->
+           serverFacade.listGames()
+        );
+    }
 }
