@@ -4,7 +4,6 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import org.junit.jupiter.api.Test;
 
 import static ui.EscapeSequences.*;
 
@@ -14,25 +13,25 @@ public class ChessRender {
     public static String render(ChessBoard chessBoard) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
+        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
         builder.append(SET_BG_COLOR_BLACK + newLine);
         for (int i = 8; i >= 1; i--) {
             renderLine(i, builder, chessBoard);
         }
-        builder.append(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
+        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
 
         return builder.toString();
     }
 
     private static void renderLine(int row, StringBuilder builder, ChessBoard chessBoard) {
-        builder.append(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_BLACK + " ");
-        builder.append(String.valueOf(row));
+        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + " ");
+        builder.append(row);
         builder.append(" ");
         for (int i = 1; i <= 8; i++) {
             renderSquare(row, i, builder, chessBoard);
         }
-        builder.append(SET_BG_COLOR_BLUE + SET_TEXT_COLOR_BLACK + " ");
-        builder.append(String.valueOf(row));
+        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + " ");
+        builder.append(row);
         builder.append(" " + newLine);
     }
 
@@ -46,7 +45,9 @@ public class ChessRender {
         } else {
             pieceString = chessPiece.toString();
         }
-        builder.append(squareColor + pieceColor + " ");
+        builder.append(squareColor);
+        builder.append(pieceColor);
+        builder.append(" ");
         builder.append(pieceString);
         builder.append(" ");
     }
