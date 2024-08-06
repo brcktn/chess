@@ -1,17 +1,16 @@
 package ui;
 
-import chess.ChessBoard;
 import models.UserData;
 import server.ResponseException;
 import server.ServerFacade;
 
 public class LoginUI implements UI {
     private final ChessClient chessClient;
-    private final ServerFacade server;
+    private final ServerFacade serverFacade;
 
     public LoginUI(ChessClient chessClient, ServerFacade server) {
         this.chessClient = chessClient;
-        this.server = server;
+        this.serverFacade = server;
     }
 
     @Override
@@ -31,8 +30,8 @@ public class LoginUI implements UI {
     @Override
     public String help() {
         return """
-        Login:    "login" <username> <password>
-        Register: "register" <username> <password> <email>
+        Login:    "login <username> <password>"
+        Register: "register" <username> <password> <email>"
         Quit:     "quit"
         Help:     "help"
         """;
@@ -43,8 +42,7 @@ public class LoginUI implements UI {
             return "login <username> <password>";
         }
         UserData req = new UserData(args[0], args[1], null);
-        chessClient.setAuthToken(server.login(req).authToken());
-        chessClient.setAsLoggedIn();
+        chessClient.setAsLoggedIn(serverFacade.login(req).authToken());
         return "Logged in!";
     }
 
@@ -53,8 +51,8 @@ public class LoginUI implements UI {
             return "register <username> <password> <email>";
         }
         UserData req = new UserData(args[0], args[1], args[2]);
-        chessClient.setAuthToken(server.register(req).authToken());
-        chessClient.setAsLoggedIn();
+        var a = req;
+        chessClient.setAsLoggedIn(serverFacade.register(req).authToken());
         return "Registered!";
     }
 }

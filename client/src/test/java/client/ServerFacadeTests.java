@@ -6,12 +6,14 @@ import org.junit.jupiter.api.*;
 import server.ResponseException;
 import server.Server;
 import server.ServerFacade;
+import ui.ChessClient;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
     private static ServerFacade serverFacade;
+    private static ChessClient chessClient;
 
     private final String newUsername = "newuser";
     private final String newPassword = "newpass";
@@ -24,7 +26,9 @@ public class ServerFacadeTests {
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
 
-        serverFacade = new ServerFacade("http://localhost:" + port);
+        String serverUrl = "http://localhost:" + port;
+        serverFacade = new ServerFacade(serverUrl, new ChessClient(serverUrl));
+        chessClient = new ChessClient(serverUrl);
 
     }
 
@@ -86,10 +90,26 @@ public class ServerFacadeTests {
     @Test
     public void testLogoutSuccess() {
         Assertions.assertDoesNotThrow(() -> {
-            serverFacade.register(newUserData);
-            serverFacade.logout();
+            chessClient.eval("register a b c");
+            chessClient.eval("logout");
         });
+    }
 
+    @Test
+    public void testLogoutInvalid() {
+        Assertions.assertThrows(ResponseException.class, () ->
+            serverFacade.logout()
+        );
+    }
+
+    @Test
+    public void testListGames() {
+        Assertions.assertDoesNotThrow(() -> {
+            chessClient.eval("register a b c");
+            chessClient.eval("create newgame");
+            chessClient.eval("create othergame");
+            chessClient.eval("list");
+        });
     }
 
 }

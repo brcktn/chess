@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import models.*;
+import ui.ChessClient;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,46 +14,52 @@ import java.net.URL;
 public class ServerFacade {
 
     private final String serverUrl;
+    private final ChessClient chessClient;
 
 
-    public ServerFacade(String serverUrl) {
+    public ServerFacade(String serverUrl, ChessClient chessClient) {
         this.serverUrl = serverUrl;
+        this.chessClient = chessClient;
     }
 
     public void clearDatabase()  throws ResponseException {
-        makeRequest("DELETE", "/db", null, null);
+        makeRequest("DELETE", "/db", null, null, null);
     }
 
     public AuthData login(UserData req) throws ResponseException {
-        return makeRequest("POST", "/session", req, AuthData.class);
+        return makeRequest("POST", "/session", req, null, AuthData.class);
     }
 
     public void logout() throws ResponseException {
-        makeRequest("DELETE", "/session", null, null);
+        makeRequest("DELETE", "/session", null, chessClient.getAuthToken(), null);
     }
 
     public AuthData register(UserData req) throws ResponseException {
-        return makeRequest("POST", "/user", req, AuthData.class);
+        return makeRequest("POST", "/user", req, null, AuthData.class);
     }
 
-    public ListGamesResponse listGames(AuthData req) throws ResponseException {
-        return makeRequest("GET", "/game", req, ListGamesResponse.class);
+    public ListGamesResponse listGames() throws ResponseException {
+        return makeRequest("GET", "/game", null, chessClient.getAuthToken(), ListGamesResponse.class);
     }
 
     public void joinGame(JoinGameRequest req) throws ResponseException {
-        makeRequest("PUT", "/game", req, null);
+        makeRequest("PUT", "/game", req, chessClient.getAuthToken(), null);
     }
 
     public GameData createGame(GameData req) throws ResponseException {
-        return makeRequest("POST", "/game", req, GameData.class);
+        return makeRequest("POST", "/game", req, chessClient.getAuthToken(), GameData.class);
     }
 
-    private <T> T makeRequest(String method, String path, Object req, Class<T> responseType) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object req, String header, Class<T> responseType) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path).toURL());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
             connection.setDoOutput(true);
+
+            if (header != null) {
+                connection.setRequestProperty("Authorization", header);
+            }
 
             if (req != null) {
                 connection.addRequestProperty("Content-Type", "application/json");

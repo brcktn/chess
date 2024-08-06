@@ -12,7 +12,7 @@ public class ChessClient {
     UI ui;
 
     public ChessClient(String serverUrl) {
-        server = new ServerFacade(serverUrl);
+        server = new ServerFacade(serverUrl, this);
         this.serverUrl = serverUrl;
         this.ui = new LoginUI(this, server);
     }
@@ -26,16 +26,14 @@ public class ChessClient {
         return ui.eval(cmd, params);
     }
 
-    public void setAsLoggedIn() {
+    public void setAsLoggedIn(String authToken) {
         ui = new MainUI(this, server);
+        this.authToken = authToken;
     }
 
     public void setAsLoggedOut() {
         ui = new LoginUI(this, server);
-    }
-
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+        this.authToken = null;
     }
 
     public String getAuthToken() {
