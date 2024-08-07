@@ -98,6 +98,16 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void testLogoutSuccess2() {
+        Assertions.assertDoesNotThrow(() -> {
+            chessClient.eval("register a b c");
+            chessClient.eval("logout");
+            chessClient.eval("login a b");
+            chessClient.eval("logout");
+        });
+    }
+
+    @Test
     public void testLogoutInvalid() {
         Assertions.assertThrows(ResponseException.class, () ->
             serverFacade.logout()

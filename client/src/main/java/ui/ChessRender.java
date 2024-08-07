@@ -9,7 +9,7 @@ import static ui.EscapeSequences.*;
 
 public class ChessRender {
 
-    private static final String newLine = SET_BG_COLOR_BLACK + "\n";
+    private static final String NEW_LINE = SET_BG_COLOR_BLACK + "\n";
 
     /**
      * @param chessBoard board to render
@@ -19,7 +19,7 @@ public class ChessRender {
         StringBuilder builder = new StringBuilder();
 
         builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
-        builder.append(SET_BG_COLOR_BLACK + newLine);
+        builder.append(SET_BG_COLOR_BLACK + NEW_LINE);
         for (int i = 8; i >= 1; i--) {
             renderLine(i, builder, chessBoard);
         }
@@ -37,7 +37,7 @@ public class ChessRender {
         }
         builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + " ");
         builder.append(row);
-        builder.append(" " + newLine);
+        builder.append(" " + NEW_LINE);
     }
 
     private static void renderSquare(int row, int col, StringBuilder builder, ChessBoard chessBoard) {
