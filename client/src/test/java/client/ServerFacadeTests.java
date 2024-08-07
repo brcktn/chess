@@ -1,5 +1,8 @@
 package client;
 
+import chess.ChessGame;
+import models.GameData;
+import models.JoinGameRequest;
 import models.UserData;
 import org.junit.jupiter.api.*;
 import server.ResponseException;
@@ -116,5 +119,36 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class, () ->
            serverFacade.listGames()
         );
+    }
+
+    @Test
+    public void testJoinGameSuccess() {
+        Assertions.assertDoesNotThrow(() -> {
+            chessClient.eval("register a b c");
+            chessClient.eval("create newgame");
+            chessClient.eval("join 1 white");
+        });
+    }
+
+    @Test
+    public void testJoinGameInvalid() {
+        Assertions.assertThrows(ResponseException.class, () ->
+                serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.BLACK, 1))
+        );
+    }
+
+    @Test
+    public void testCreateGameSuccess() {
+        Assertions.assertDoesNotThrow(() -> {
+            chessClient.eval("register a b c");
+            chessClient.eval("create newgame");
+        });
+    }
+
+    @Test
+    public void testCreateGameInvalid() {
+        Assertions.assertThrows(ResponseException.class, () ->
+            serverFacade.createGame(new GameData(0, null, null, "game", new ChessGame()))
+            );
     }
 }
