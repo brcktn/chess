@@ -19,21 +19,46 @@ public class ChessRender {
         StringBuilder builder = new StringBuilder();
 
         builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
-        builder.append(SET_BG_COLOR_BLACK + NEW_LINE);
+        builder.append(SET_BG_COLOR_DARK_GREY + NEW_LINE);
         for (int i = 8; i >= 1; i--) {
-            renderLine(i, builder, chessBoard);
+            renderLine(i, builder, chessBoard, false);
         }
         builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
+        builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE);
 
         return builder.toString();
     }
 
-    private static void renderLine(int row, StringBuilder builder, ChessBoard chessBoard) {
+    public static String render(ChessBoard chessBoard, ChessGame.TeamColor renderTeam) {
+        if (renderTeam == ChessGame.TeamColor.WHITE) {
+            return render(chessBoard);
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    A  B  C  D  E  F  G  H    ");
+        builder.append(SET_BG_COLOR_DARK_GREY + NEW_LINE);
+        for (int i = 1; i <= 8; i++) {
+            renderLine(i, builder, chessBoard, true);
+        }
+        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    A  B  C  D  E  F  G  H    ");
+        builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE);
+
+        return builder.toString();
+    }
+
+    private static void renderLine(int row, StringBuilder builder, ChessBoard chessBoard, boolean reverseOrder) {
         builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + " ");
         builder.append(row);
         builder.append(" ");
-        for (int i = 1; i <= 8; i++) {
-            renderSquare(row, i, builder, chessBoard);
+        if (reverseOrder) {
+            for (int i = 8; i >= 1; i--) {
+                renderSquare(row, i, builder, chessBoard);
+            }
+        } else {
+            for (int i = 1; i <= 8; i++) {
+                renderSquare(row, i, builder, chessBoard);
+            }
         }
         builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + " ");
         builder.append(row);

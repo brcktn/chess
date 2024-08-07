@@ -12,7 +12,7 @@ public class Repl {
     }
 
     public void run() {
-        System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_BLUE + "Welcome to the chess. Sign in to start.");
+        System.out.println(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE + "Welcome to the chess. Sign in to start.");
         System.out.print(client.eval("help"));
 
         Scanner scanner = new Scanner(System.in);
@@ -31,7 +31,7 @@ public class Repl {
     }
 
     private void printPrompt() {
-        System.out.print("\n >>> " + SET_BG_COLOR_BLACK + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n >>> ");
     }
 
 }

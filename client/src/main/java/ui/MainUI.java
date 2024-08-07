@@ -1,8 +1,10 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import models.GameData;
 import models.JoinGameRequest;
+import models.ListGamesResponse;
 import server.ResponseException;
 import server.ServerFacade;
 
@@ -57,11 +59,29 @@ public class MainUI implements UI {
         if (args.length != 1) {
             return "create <game_name>";
         }
-        return serverFacade.createGame(new GameData(0,null, null, args[0], new ChessGame())).toString();
+        StringBuilder builder = new StringBuilder();
+        GameData gameData = serverFacade.createGame(new GameData(0,null, null, args[0], new ChessGame()));
+        int gameID = gameData.gameID();
+        String gameName = gameData.gameName();
+        builder.append("New game \"");
+        builder.append(gameName);
+        builder.append("\" created with ID ");
+        builder.append(gameID);
+        return builder.toString();
     }
 
     private String listGames() throws ResponseException {
-        return serverFacade.listGames().toString();
+        StringBuilder builder = new StringBuilder();
+        ListGamesResponse response = serverFacade.listGames();
+        for (GameData gameData : response.games()) {
+            builder.append("Game ID: ");
+            builder.append(gameData.gameID());
+            builder.append(",   Game name: ");
+            builder.append(gameData.gameName());
+            builder.append("\n");
+        }
+
+        return builder.toString();
     }
 
     private String playGame(String[] args) throws ResponseException {
@@ -76,10 +96,12 @@ public class MainUI implements UI {
         }
         if (args[1].equalsIgnoreCase("white")) {
             serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, gameId));
-            return new ChessGame().toString();
+            return "Joined game as white!\n" +
+                    ChessRender.render(new ChessGame().getBoard());
         } else if (args[1].equalsIgnoreCase("black")) {
             serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.BLACK, gameId));
-            return ChessRender.render(new ChessGame().getBoard());
+            return "Joined game as black!\n" +
+                    ChessRender.render(new ChessGame().getBoard(), ChessGame.TeamColor.BLACK);
         }
         return """
                 invalid team color
@@ -88,6 +110,11 @@ public class MainUI implements UI {
     }
 
     private String observeGame(String[] args) {
-        return ChessRender.render(new ChessGame().getBoard());
+        ChessBoard newBoard = new ChessGame().getBoard();
+
+        return "White view: \n" +
+                ChessRender.render(newBoard) +
+                "\n\nBlack view: \n" +
+                ChessRender.render(newBoard, ChessGame.TeamColor.BLACK);
     }
 }
