@@ -70,10 +70,10 @@ public class ServerFacade {
             }
 
             connection.connect();
-            int statusCode = connection.getResponseCode();
-            if (statusCode != 200) {
-                throw new ResponseException(statusCode, connection.getResponseMessage());
-            }
+//            int statusCode = connection.getResponseCode();
+//            if (statusCode != 200) {
+//                throw new ResponseException(statusCode, connection.getResponseMessage());
+//            }
 
             T response = null;
             if (connection.getContentLength() < 0) {
@@ -88,7 +88,7 @@ public class ServerFacade {
             return response;
 
         } catch (Exception e) {
-            throw new ResponseException(500, e.getMessage());
+            throw new ResponseException(e.getMessage());
         }
     }
 }
