@@ -74,10 +74,20 @@ public class MainUI implements UI {
         StringBuilder builder = new StringBuilder();
         ListGamesResponse response = serverFacade.listGames();
         for (GameData gameData : response.games()) {
+            String whitePlayer = gameData.whiteUsername();
+            String blackPlayer = gameData.blackUsername();
             builder.append("Game ID: ");
             builder.append(gameData.gameID());
             builder.append(",   Game name: ");
             builder.append(gameData.gameName());
+            if (whitePlayer != null) {
+                builder.append(", white: ");
+                builder.append(whitePlayer);
+            }
+            if (blackPlayer != null) {
+                builder.append(", black: ");
+                builder.append(blackPlayer);
+            }
             builder.append("\n");
         }
 
@@ -85,6 +95,11 @@ public class MainUI implements UI {
     }
 
     private String playGame(String[] args) throws ResponseException {
+        if (args.length != 2) {
+            return """
+                    play <gameID> <color>
+                    """;
+        }
         int gameId;
         try {
             gameId = Integer.parseInt(args[0]);
