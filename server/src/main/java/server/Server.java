@@ -6,11 +6,13 @@ import service.AlreadyTakenException;
 import service.BadRequestException;
 import service.UnauthorizedException;
 import spark.*;
+import websocket.WebSocketHandler;
 
 import java.io.IOException;
 
 public class Server {
     private DataAccess dataAccess;
+    private final WebSocketHandler webSocketHandler = new WebSocketHandler();
 
     public int run(int desiredPort) {
         try {
@@ -30,6 +32,8 @@ public class Server {
         Spark.get(   "/game",    this::listGames);
         Spark.post(  "/game",    this::createGame);
         Spark.put(   "/game",    this::joinGame);
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         Spark.awaitInitialization();
         return Spark.port();

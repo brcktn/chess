@@ -14,7 +14,6 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class MySqlDAO implements DataAccess {
 
