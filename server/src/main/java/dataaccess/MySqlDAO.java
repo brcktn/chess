@@ -142,7 +142,7 @@ public class MySqlDAO implements DataAccess {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
-            Collection<GameData> games = new ArrayList<>();
+            ArrayList<GameData> games = new ArrayList<>();
 
             while (rs.next()) {
                 int gameID = rs.getInt("gameID");

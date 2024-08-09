@@ -5,6 +5,7 @@ import models.GameData;
 import models.ListGamesResponse;
 import models.UserData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -48,7 +49,7 @@ public class MemoryDAO implements DataAccess{
 
     @Override
     public ListGamesResponse listGames() {
-        return new ListGamesResponse(games.values());
+        return new ListGamesResponse(new ArrayList<>(games.values()));
     }
 
     @Override
