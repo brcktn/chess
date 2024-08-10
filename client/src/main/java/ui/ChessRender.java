@@ -9,7 +9,13 @@ import static ui.EscapeSequences.*;
 
 public class ChessRender {
 
-    private static final String NEW_LINE = SET_BG_COLOR_BLACK + "\n";
+    private static final String NEW_LINE = SET_BG_COLOR_DARK_GREY + "\n";
+    private static final String BORDER_COLOR = SET_BG_COLOR_LIGHT_GREY;
+    private static final String NUMBER_COLOR = SET_TEXT_COLOR_BLACK;
+    private static final String LIGHT_SQUARE_COLOR = SET_BG_COLOR_WHITE;
+    private static final String DARK_SQUARE_COLOR = SET_BG_COLOR_BLACK;
+    private static final String LIGHT_PIECE_COLOR = SET_TEXT_COLOR_BLUE;
+    private static final String DARK_PIECE_COLOR = SET_TEXT_COLOR_RED;
 
     /**
      * @param chessBoard board to render
@@ -18,12 +24,12 @@ public class ChessRender {
     public static String render(ChessBoard chessBoard) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
-        builder.append(SET_BG_COLOR_DARK_GREY + NEW_LINE);
+        builder.append(BORDER_COLOR + NUMBER_COLOR + "    H  G  F  E  D  C  B  A    ");
+        builder.append(NEW_LINE);
         for (int i = 8; i >= 1; i--) {
             renderLine(i, builder, chessBoard, false);
         }
-        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    H  G  F  E  D  C  B  A    ");
+        builder.append(BORDER_COLOR + NUMBER_COLOR + "    H  G  F  E  D  C  B  A    ");
         builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE);
 
         return builder.toString();
@@ -36,19 +42,19 @@ public class ChessRender {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    A  B  C  D  E  F  G  H    ");
-        builder.append(SET_BG_COLOR_DARK_GREY + NEW_LINE);
+        builder.append(BORDER_COLOR + NUMBER_COLOR + "    A  B  C  D  E  F  G  H    ");
+        builder.append(NEW_LINE);
         for (int i = 1; i <= 8; i++) {
             renderLine(i, builder, chessBoard, true);
         }
-        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + "    A  B  C  D  E  F  G  H    ");
+        builder.append(BORDER_COLOR + NUMBER_COLOR + "    A  B  C  D  E  F  G  H    ");
         builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE);
 
         return builder.toString();
     }
 
     private static void renderLine(int row, StringBuilder builder, ChessBoard chessBoard, boolean reverseOrder) {
-        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + " ");
+        builder.append(BORDER_COLOR + NUMBER_COLOR + " ");
         builder.append(row);
         builder.append(" ");
         if (reverseOrder) {
@@ -60,7 +66,7 @@ public class ChessRender {
                 renderSquare(row, i, builder, chessBoard);
             }
         }
-        builder.append(SET_BG_COLOR_MAGENTA + SET_TEXT_COLOR_BLACK + " ");
+        builder.append(BORDER_COLOR + NUMBER_COLOR + " ");
         builder.append(row);
         builder.append(" " + NEW_LINE);
     }
@@ -84,9 +90,9 @@ public class ChessRender {
 
     private static String getSquareColor(int row, int col) {
         if ((row + col) % 2 == 1) {
-            return SET_BG_COLOR_LIGHT_GREY;
+            return LIGHT_SQUARE_COLOR;
         } else {
-            return SET_BG_COLOR_DARK_GREEN;
+            return DARK_SQUARE_COLOR;
         }
     }
 
@@ -96,9 +102,9 @@ public class ChessRender {
             return "";
         }
         if (chessPiece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-            return SET_TEXT_COLOR_BLACK;
+            return DARK_PIECE_COLOR;
         } else {
-            return SET_TEXT_COLOR_WHITE;
+            return LIGHT_PIECE_COLOR;
         }
     }
 }
