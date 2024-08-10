@@ -12,11 +12,12 @@ import java.io.IOException;
 
 public class Server {
     private DataAccess dataAccess;
-    private final WebSocketHandler webSocketHandler = new WebSocketHandler();
+    private WebSocketHandler webSocketHandler;
 
     public int run(int desiredPort) {
         try {
             dataAccess = new MySqlDAO();
+            webSocketHandler = new WebSocketHandler(dataAccess);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }

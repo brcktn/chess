@@ -1,6 +1,8 @@
 package websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -27,6 +29,11 @@ public class ConnectionManager {
         for (Session session : sessions.get(gameId)) {
             send(session, message);
         }
+    }
+
+    public void sendError(Session session, String message) throws IOException {
+        ServerMessage error = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+        send(session, new Gson().toJson(error));
     }
 
     private void send(Session session, String message) throws IOException {
