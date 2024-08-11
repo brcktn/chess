@@ -1,16 +1,20 @@
 package ui;
 
 import server.ServerFacade;
+import server.WebSocketFacade;
 
 import java.util.Arrays;
 
 public class ChessClient {
 
     private final ServerFacade server;
+    private WebSocketFacade webSocketFacade;
     private String authToken;
     UI ui;
+    String serverUrl;
 
     public ChessClient(String serverUrl) {
+        this.serverUrl = serverUrl;
         server = new ServerFacade(serverUrl, this);
         this.ui = new LoginUI(this, server);
     }
@@ -36,5 +40,17 @@ public class ChessClient {
 
     public String getAuthToken() {
         return authToken;
+    }
+
+    public WebSocketFacade getWebSocketFacade() {
+        return webSocketFacade;
+    }
+
+    public void setWebSocketFacade(WebSocketFacade webSocketFacade) {
+        this.webSocketFacade = webSocketFacade;
+    }
+
+    public String getServerUrl() {
+        return serverUrl;
     }
 }

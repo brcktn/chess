@@ -7,6 +7,7 @@ import models.JoinGameRequest;
 import models.ListGamesResponse;
 import server.ResponseException;
 import server.ServerFacade;
+import server.WebSocketFacade;
 
 import java.util.HashMap;
 
@@ -130,10 +131,12 @@ public class MainUI implements UI {
         }
         if (args[1].equalsIgnoreCase("white")) {
             serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, gameID));
+            chessClient.setWebSocketFacade(new WebSocketFacade(chessClient.getServerUrl()));
             return "Joined game as white!\n" +
                     ChessRender.render(new ChessGame().getBoard());
         } else if (args[1].equalsIgnoreCase("black")) {
             serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.BLACK, gameID));
+            chessClient.setWebSocketFacade(new WebSocketFacade(chessClient.getServerUrl()));
             return "Joined game as black!\n" +
                     ChessRender.render(new ChessGame().getBoard(), ChessGame.TeamColor.BLACK);
         }
