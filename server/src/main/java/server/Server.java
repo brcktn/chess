@@ -26,6 +26,8 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your server.endpoints and handle exceptions here.
+        Spark.webSocket("/ws", webSocketHandler);
+
         Spark.delete("/db",      this::clearDatabase);
         Spark.post(  "/user",    this::registerUser);
         Spark.post(  "/session", this::login);
@@ -33,8 +35,6 @@ public class Server {
         Spark.get(   "/game",    this::listGames);
         Spark.post(  "/game",    this::createGame);
         Spark.put(   "/game",    this::joinGame);
-
-        Spark.webSocket("/ws", webSocketHandler);
 
         Spark.awaitInitialization();
         return Spark.port();

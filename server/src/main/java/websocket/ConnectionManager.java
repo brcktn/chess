@@ -36,9 +36,13 @@ public class ConnectionManager {
         send(session, new Gson().toJson(error));
     }
 
-    private void send(Session session, String message) throws IOException {
+    public void send(Session session, String message) throws IOException {
         if (session.isOpen()) {
             session.getRemote().sendString(message);
         }
+    }
+
+    public void clear() {
+        sessions.clear();
     }
 }

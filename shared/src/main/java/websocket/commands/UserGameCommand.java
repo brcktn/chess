@@ -26,18 +26,17 @@ public class UserGameCommand {
     }
 
     public UserGameCommand(String authToken, Integer gameID, ChessMove move) {
-        this(CommandType.CONNECT_PLAYER, authToken, gameID);
+        this(CommandType.MAKE_MOVE, authToken, gameID);
         this.move = move;
     }
 
     public UserGameCommand(String authToken, Integer gameID, ChessGame.TeamColor teamColor) {
-        this(CommandType.CONNECT_PLAYER, authToken, gameID);
+        this(CommandType.CONNECT, authToken, gameID);
         this.playerColor = teamColor;
     }
 
     public enum CommandType {
-        CONNECT_PLAYER,
-        CONNECT_OBSERVER,
+        CONNECT,
         MAKE_MOVE,
         LEAVE,
         RESIGN
