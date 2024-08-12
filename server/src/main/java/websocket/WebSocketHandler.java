@@ -54,18 +54,14 @@ public class WebSocketHandler {
         }
 
         switch (cmd.getCommandType()) {
-            case CONNECT -> connect(session, authData.username(), cmd.getPlayerColor(), gameData);
+            case CONNECT -> connect(session, authData.username(), gameData);
             case MAKE_MOVE -> makeMove(session, authData.username(), cmd.getMove(), gameData);
             case LEAVE -> leave(session, authData.username(), gameData);
             case RESIGN -> resign(session, authData.username(), gameData);
         }
     }
 
-    private void connect(Session session, String username, ChessGame.TeamColor teamColor, GameData gameData) throws IOException {
-        if (teamColor == null) {
-            connectObserver(session, username, gameData);
-            return;
-        }
+    private void connect(Session session, String username, GameData gameData) throws IOException {
 
         connectionManager.addSession(gameData.gameID(), session);
 
@@ -73,7 +69,7 @@ public class WebSocketHandler {
         connectionManager.send(session, gameJson);
 
         String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username +
-                " joined game as " + (teamColor == ChessGame.TeamColor.BLACK ? "black" : "white")));
+                " joined game"));
         connectionManager.broadcast(gameData.gameID(), notificationJson);
     }
 
@@ -145,17 +141,6 @@ public class WebSocketHandler {
 
     private void resign(Session session, String username, GameData gameData) {
 
-    }
-
-    private void connectObserver(Session session, String username, GameData gameData) throws IOException {
-        connectionManager.addSession(gameData.gameID(), session);
-
-        String gameJson = gson.toJson(new ServerMessage(gameData.game()));
-        connectionManager.send(session, gameJson);
-
-        String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                username + " is observing"));
-        connectionManager.broadcast(gameData.gameID(), notificationJson);
     }
 
 }

@@ -62,7 +62,7 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void joinPlayer(String authToken, int gameId, ChessGame.TeamColor teamColor) throws IOException {
-        sendMessage(new UserGameCommand(authToken, gameId, teamColor));
+        sendMessage(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameId));
     }
 
     public void makeMove(String authToken, int gameId, ChessMove move) throws IOException {
