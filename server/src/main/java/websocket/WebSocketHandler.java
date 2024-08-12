@@ -2,6 +2,7 @@ package websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
@@ -66,6 +67,11 @@ public class WebSocketHandler {
             return;
         }
 
+        if (gameData.whiteUsername() != null && teamColor == ChessGame.TeamColor.WHITE || gameData.blackUsername() != null && teamColor == ChessGame.TeamColor.BLACK) {
+            connectionManager.sendError(session, "Team taken!");
+            return;
+        }
+
         connectionManager.addSession(gameData.gameID(), session);
 
         String gameJson = gson.toJson(new ServerMessage(gameData.game(), teamColor));
@@ -76,8 +82,62 @@ public class WebSocketHandler {
         connectionManager.broadcast(gameData.gameID(), notificationJson);
     }
 
-    private void makeMove(Session session, String username, ChessMove move, GameData gameData) {
+    private void makeMove(Session session, String username, ChessMove move, GameData gameData) throws IOException {
+        if (move == null) {
+            connectionManager.sendError(session, "No move provided");
+            return;
+        }
 
+        ChessGame.TeamColor currentColor = null;
+
+        if (username.equals(gameData.whiteUsername())) {
+            currentColor = ChessGame.TeamColor.WHITE;
+        }
+        if (username.equals(gameData.blackUsername())) {
+            currentColor = ChessGame.TeamColor.BLACK;
+        }
+        if (currentColor == null) {
+            connectionManager.sendError(session, "You're not playing in this game!");
+            return;
+        }
+
+        if (gameData.game().getGameOver()) {
+            connectionManager.sendError(session, "Game is over");
+            return;
+        }
+
+        ChessGame game = gameData.game();
+        if (currentColor != gameData.game().getTeamTurn()) {
+            connectionManager.sendError(session, "It's not your turn!");
+            return;
+        }
+
+        try {
+            game.makeMove(move);
+        } catch (InvalidMoveException e) {
+            connectionManager.sendError(session, "Invalid move!");
+            return;
+        }
+
+        if (game.isInCheckmate(game.getTeamTurn())) {
+            game.setGameOver(true);
+            connectionManager.send(session, "Checkmate. " + username + " wins!");
+        } else if (game.isInStalemate(game.getTeamTurn())) {
+            game.setGameOver(true);
+            connectionManager.send(session, "Stalemate: game is a draw");
+        } else if (game.isInCheckmate(game.getTeamTurn())) {
+            connectionManager.send(session, "Check.");
+        }
+
+        try {
+            dataAccess.updateGame(gameData);
+        } catch (DataAccessException e) {
+            connectionManager.sendError(session, "Server Error");
+            return;
+        }
+        Gson gson = new Gson();
+        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(gameData.game(), game.getTeamTurn())));
+        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(username + " makes move: " + move)));
     }
 
     private void leave(Session session, String username, GameData gameData) {

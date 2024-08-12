@@ -26,6 +26,11 @@ public class ServerMessage {
         this.message = message;
     }
 
+    public ServerMessage(String message) {
+        this.serverMessageType = ServerMessageType.NOTIFICATION;
+        this.message = message;
+    }
+
     public ServerMessage(ChessGame gameData, ChessGame.TeamColor teamColor) {
         this.game = gameData;
         this.teamColor = teamColor;

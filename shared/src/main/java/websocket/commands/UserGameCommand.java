@@ -19,17 +19,20 @@ public class UserGameCommand {
     private ChessMove move;
     private ChessGame.TeamColor playerColor;
 
+    // normal constructor
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
     }
 
+    // constructor for MAKE_MOVE
     public UserGameCommand(String authToken, Integer gameID, ChessMove move) {
         this(CommandType.MAKE_MOVE, authToken, gameID);
         this.move = move;
     }
 
+    // constructor for CONNECT
     public UserGameCommand(String authToken, Integer gameID, ChessGame.TeamColor teamColor) {
         this(CommandType.CONNECT, authToken, gameID);
         this.playerColor = teamColor;
