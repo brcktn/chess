@@ -9,20 +9,17 @@ import server.ResponseException;
 import server.ServerFacade;
 import server.WebSocketFacade;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import static ui.EscapeSequences.ERASE_SCREEN;
 
 public class MainUI implements UI {
     private final ChessClient chessClient;
-    private final ServerFacade serverFacade;
-    private final WebSocketFacade webSocketFacade;
     private HashMap<Integer, GameData> gameDataMap = new HashMap<>();
 
-    public MainUI(ChessClient chessClient, ServerFacade server, WebSocketFacade webSocket) {
+    public MainUI(ChessClient chessClient) {
         this.chessClient = chessClient;
-        this.serverFacade = server;
-        this.webSocketFacade = webSocket;
     }
 
 
@@ -57,7 +54,7 @@ public class MainUI implements UI {
     }
 
     private String logout() throws ResponseException {
-        serverFacade.logout();
+        chessClient.getServer().logout();
         chessClient.setAsLoggedOut();
         gameDataMap.clear();
         return "Logged out!";
@@ -68,7 +65,7 @@ public class MainUI implements UI {
             return "create <game_name>";
         }
         StringBuilder builder = new StringBuilder();
-        GameData gameData = serverFacade.createGame(new GameData(0,null, null, args[0], new ChessGame()));
+        GameData gameData = chessClient.getServer().createGame(new GameData(0,null, null, args[0], new ChessGame()));
         String gameName = gameData.gameName();
         builder.append("New game \"");
         builder.append(gameName);
@@ -78,7 +75,7 @@ public class MainUI implements UI {
 
     private String listGames() throws ResponseException {
         StringBuilder builder = new StringBuilder();
-        ListGamesResponse response = serverFacade.listGames();
+        ListGamesResponse response = chessClient.getServer().listGames();
         gameDataMap = new HashMap<>();
         for (int i = 0; i < response.games().size(); i++) {
             gameDataMap.put(i, response.games().get(i));
@@ -107,7 +104,7 @@ public class MainUI implements UI {
         return builder.toString();
     }
 
-    private String playGame(String[] args) throws ResponseException {
+    private String playGame(String[] args) throws ResponseException, IOException {
         if (args.length != 2) {
             return """
                     play <gameNum> <color>
@@ -142,20 +139,44 @@ public class MainUI implements UI {
                 invalid team color
                 play <gameNum> <color>
                 """;
+
         }
-
-        serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
-
         chessClient.setAsInGame();
+
+        chessClient.getServer().joinGame(new JoinGameRequest(teamColor, gameID));
+        chessClient.getWebSocketFacade().joinPlayer(chessClient.getAuthToken(), gameID, teamColor);
+
         return "Joined game!";
     }
 
-    private String observeGame(String[] args) {
-        ChessBoard newBoard = new ChessGame().getBoard();
+    private String observeGame(String[] args) throws ResponseException, IOException {
+        if (args.length != 1) {
+            return """
+                    observe <gameNum>
+                    """;
+        }
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            return """
+                    invalid game number
+                    observe <gameNum>
+                    """;
+        }
+        int gameID;
+        try {
+            gameID = gameDataMap.get(gameNumber).gameID();
+        } catch (NullPointerException e) {
+            return """
+                   invalid game number
+                   observe <gameID>
+                   """;
+        }
 
-        return "White view: \n" +
-                ChessRender.render(newBoard) +
-                "\n\nBlack view: \n" +
-                ChessRender.render(newBoard, ChessGame.TeamColor.BLACK);
+        chessClient.setAsObserve();
+
+        chessClient.getWebSocketFacade().joinPlayer(chessClient.getAuthToken(), gameID, null);
+        return "Observing game!";
     }
 }

@@ -24,13 +24,13 @@ public class ChessRender {
     public static String render(ChessBoard chessBoard) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(BORDER_COLOR + NUMBER_COLOR + "    H  G  F  E  D  C  B  A    ");
+        builder.append(NEW_LINE + BORDER_COLOR + NUMBER_COLOR + "    A  B  C  D  E  F  G  H    ");
         builder.append(NEW_LINE);
         for (int i = 8; i >= 1; i--) {
             renderLine(i, builder, chessBoard, false);
         }
-        builder.append(BORDER_COLOR + NUMBER_COLOR + "    H  G  F  E  D  C  B  A    ");
-        builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE);
+        builder.append(BORDER_COLOR + NUMBER_COLOR + "    A  B  C  D  E  F  G  H    ");
+        builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE + NEW_LINE);
 
         return builder.toString();
     }
@@ -42,13 +42,13 @@ public class ChessRender {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(BORDER_COLOR + NUMBER_COLOR + "    A  B  C  D  E  F  G  H    ");
+        builder.append(NEW_LINE + BORDER_COLOR + NUMBER_COLOR + "    H  G  F  E  D  C  B  A    ");
         builder.append(NEW_LINE);
         for (int i = 1; i <= 8; i++) {
             renderLine(i, builder, chessBoard, true);
         }
-        builder.append(BORDER_COLOR + NUMBER_COLOR + "    A  B  C  D  E  F  G  H    ");
-        builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE);
+        builder.append(BORDER_COLOR + NUMBER_COLOR + "    H  G  F  E  D  C  B  A    ");
+        builder.append(SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_BLUE + NEW_LINE);
 
         return builder.toString();
     }

@@ -13,6 +13,7 @@ public class ServerMessage {
     ServerMessageType serverMessageType;
     String message;
     ChessGame game;
+    ChessGame.TeamColor teamColor;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -25,8 +26,9 @@ public class ServerMessage {
         this.message = message;
     }
 
-    public ServerMessage(ChessGame gameData) {
+    public ServerMessage(ChessGame gameData, ChessGame.TeamColor teamColor) {
         this.game = gameData;
+        this.teamColor = teamColor;
         this.serverMessageType = ServerMessageType.LOAD_GAME;
     }
 
@@ -40,6 +42,10 @@ public class ServerMessage {
 
     public ChessGame getGame() {
         return this.game;
+    }
+
+    public ChessGame.TeamColor getTeamColor() {
+        return this.teamColor;
     }
 
     @Override

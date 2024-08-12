@@ -68,7 +68,7 @@ public class WebSocketHandler {
 
         connectionManager.addSession(gameData.gameID(), session);
 
-        String gameJson = gson.toJson(new ServerMessage(gameData.game()));
+        String gameJson = gson.toJson(new ServerMessage(gameData.game(), teamColor));
         connectionManager.send(session, gameJson);
 
         String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username +
@@ -88,8 +88,15 @@ public class WebSocketHandler {
 
     }
 
-    private void connectObserver(Session session, String username, GameData gameData) {
+    private void connectObserver(Session session, String username, GameData gameData) throws IOException {
+        connectionManager.addSession(gameData.gameID(), session);
 
+        String gameJson = gson.toJson(new ServerMessage(gameData.game(), ChessGame.TeamColor.WHITE));
+        connectionManager.send(session, gameJson);
+
+        String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                username + " is observing"));
+        connectionManager.broadcast(gameData.gameID(), notificationJson);
     }
 
 }

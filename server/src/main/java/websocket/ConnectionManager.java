@@ -13,10 +13,9 @@ public class ConnectionManager {
     private final ConcurrentHashMap<Integer, Set<Session>> sessions = new ConcurrentHashMap<>();
 
     public void addSession(int gameId, Session session) {
-        if (sessions.containsKey(gameId)) {
-            sessions.put(gameId, new HashSet<>());
-        }
+        sessions.computeIfAbsent(gameId, k -> new HashSet<>());
         sessions.get(gameId).add(session);
+        System.out.println("test");
     }
 
     public void remove(int gameId, Session session) {

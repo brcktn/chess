@@ -1,8 +1,12 @@
 package server;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
+import ui.ChessRender;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -24,7 +28,13 @@ public class WebSocketFacade extends Endpoint {
 
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 public void onMessage(String message) {
-                    System.out.println(message);
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
+                        ChessBoard board = serverMessage.getGame().getBoard();
+                        System.out.print(ChessRender.render(board, serverMessage.getTeamColor()));
+                    } else {
+                        System.out.print(serverMessage.getMessage());
+                    }
                 }
             });
 
@@ -33,6 +43,7 @@ public class WebSocketFacade extends Endpoint {
             throw new ResponseException(e.getMessage());
         }
     }
+
 
     public void send(String message) throws IOException {
         this.session.getBasicRemote().sendText(message);

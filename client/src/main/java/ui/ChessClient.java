@@ -33,7 +33,7 @@ public class ChessClient {
     }
 
     public void setAsLoggedIn(String authToken) {
-        ui = new MainUI(this, server, webSocketFacade);
+        ui = new MainUI(this);
         this.authToken = authToken;
     }
 
@@ -53,12 +53,16 @@ public class ChessClient {
     }
 
     public void setAsOutOfGame() {
-        ui = new MainUI(this, server, webSocketFacade);
+        ui = new MainUI(this);
         setWebSocketFacade(null);
     }
 
     public String getAuthToken() {
         return authToken;
+    }
+
+    public ServerFacade getServer() {
+        return server;
     }
 
     public WebSocketFacade getWebSocketFacade() {
