@@ -141,7 +141,7 @@ public class MainUI implements UI {
                 """;
 
         }
-        chessClient.setAsInGame();
+        chessClient.setAsInGame(gameID, teamColor);
 
         chessClient.getServer().joinGame(new JoinGameRequest(teamColor, gameID));
         chessClient.getWebSocketFacade().joinPlayer(chessClient.getAuthToken(), gameID, teamColor);

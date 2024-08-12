@@ -45,7 +45,7 @@ public class GameService {
         }
 
         if (requestedTeam == ChessGame.TeamColor.WHITE) {
-            if (game.whiteUsername() != null) {
+            if (game.whiteUsername() != null && !game.whiteUsername().equals(username)) {
                 throw new AlreadyTakenException("Error: already taken");
             }
 
@@ -53,7 +53,7 @@ public class GameService {
                                   game.gameName(), game.game()));
 
         } if (requestedTeam == ChessGame.TeamColor.BLACK) {
-            if (game.blackUsername() != null) {
+            if (game.blackUsername() != null && !game.blackUsername().equals(username)) {
                 throw new AlreadyTakenException("Error: already taken");
             }
 

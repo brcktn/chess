@@ -1,12 +1,10 @@
 package ui;
 
+import chess.ChessGame;
 import server.ResponseException;
 import server.ServerFacade;
 import server.WebSocketFacade;
 
-import javax.websocket.DeploymentException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 public class ChessClient {
@@ -16,6 +14,7 @@ public class ChessClient {
     private String authToken;
     UI ui;
     String serverUrl;
+    ChessGame.TeamColor viewColor;
 
     public ChessClient(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -42,19 +41,22 @@ public class ChessClient {
         this.authToken = null;
     }
 
-    public void setAsInGame() throws ResponseException {
-        ui = new GameUI(this, server, webSocketFacade);
-        setWebSocketFacade(new WebSocketFacade(getServerUrl()));
+    public void setAsInGame(int gameID, ChessGame.TeamColor playerColor) throws ResponseException {
+        this.viewColor = playerColor;
+        setWebSocketFacade(new WebSocketFacade(getServerUrl(), this));
+        ui = new GameUI(this, server, webSocketFacade, gameID);
     }
 
     public void setAsObserve() throws ResponseException {
+        this.viewColor = ChessGame.TeamColor.WHITE;
+        setWebSocketFacade(new WebSocketFacade(getServerUrl(), this));
         ui = new ObserveUI(this, server);
-        setWebSocketFacade(new WebSocketFacade(getServerUrl()));
     }
 
     public void setAsOutOfGame() {
-        ui = new MainUI(this);
         setWebSocketFacade(null);
+        ui = new MainUI(this);
+        this.viewColor = null;
     }
 
     public String getAuthToken() {
@@ -63,6 +65,10 @@ public class ChessClient {
 
     public ServerFacade getServer() {
         return server;
+    }
+
+    public ChessGame.TeamColor getViewColor() {
+        return viewColor;
     }
 
     public WebSocketFacade getWebSocketFacade() {

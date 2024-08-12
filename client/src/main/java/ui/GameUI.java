@@ -1,17 +1,24 @@
 package ui;
 
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import server.ServerFacade;
 import server.WebSocketFacade;
+
+import java.io.IOException;
 
 public class GameUI implements UI {
     private final ChessClient chessClient;
     private final ServerFacade serverFacade;
     private final WebSocketFacade webSocketFacade;
+    private final int gameID;
 
-    public GameUI(ChessClient chessClient, ServerFacade server, WebSocketFacade webSocket) {
+    public GameUI(ChessClient chessClient, ServerFacade server, WebSocketFacade webSocket, int gameID) {
         this.chessClient = chessClient;
         this.serverFacade = server;
         this.webSocketFacade = webSocket;
+        this.gameID = gameID;
     }
 
     @Override
@@ -33,7 +40,7 @@ public class GameUI implements UI {
     @Override
     public String help() {
         return """
-        Make move:         "move <b1> <c1>"
+        Make move:         "move <b1> <c1> (<q>)"
         Leave game:        "leave"
         Resign from game:  "resign"
         Highlight moves:   "highlight <b1>"
@@ -43,7 +50,47 @@ public class GameUI implements UI {
     }
 
     private String makeMove(String[] args) {
-        return null;
+        if (args.length < 2 || args.length > 3) {
+            return "move <starting square> <destination square> (<promotion piece>";
+        }
+        ChessPiece.PieceType promotionPiece = null;
+        if (args.length == 3) {
+
+            promotionPiece = switch (args[2]) {
+                case "q" -> ChessPiece.PieceType.QUEEN;
+                case "queen" -> ChessPiece.PieceType.QUEEN;
+                case "r" -> ChessPiece.PieceType.ROOK;
+                case "rook" -> ChessPiece.PieceType.ROOK;
+                case "b" -> ChessPiece.PieceType.BISHOP;
+                case "bishop" -> ChessPiece.PieceType.BISHOP;
+                case "k" -> ChessPiece.PieceType.KNIGHT;
+                case "n" -> ChessPiece.PieceType.KNIGHT;
+                case "knight" -> ChessPiece.PieceType.KNIGHT;
+                default -> null;
+            };
+            if (promotionPiece == null) {
+                return "%s is not a valid piece".formatted(args[2]);
+            }
+        }
+
+        ChessPosition startPos = stringToPosition(args[0]);
+        if (startPos == null) {
+            return "%s is invalid".formatted(args[0]);
+        }
+        ChessPosition endPos = stringToPosition(args[1]);
+        if (endPos == null) {
+            return "%s is invalid".formatted(args[1]);
+        }
+
+        ChessMove move = new ChessMove(startPos, endPos, promotionPiece);
+        try {
+            webSocketFacade.makeMove(chessClient.getAuthToken(), gameID, move);
+        } catch (IOException e) {
+            return "Could not make move: " + e.getMessage();
+        }
+        return "";
+
+
     }
 
     private String leaveGame() {
@@ -60,5 +107,21 @@ public class GameUI implements UI {
 
     private String redraw() {
         return null;
+    }
+
+    private ChessPosition stringToPosition(String posString) {
+        if (posString.length() != 2) {
+            return null;
+        }
+        char colChar = posString.charAt(0);
+        char rowChar = posString.charAt(1);
+
+        int col = colChar - 'a' + 1;
+        int row = Character.getNumericValue(rowChar);
+
+        if (row <= 0 || row > 8 || col <= 0 || col > 8) {
+            return null;
+        }
+        return new ChessPosition(row, col);
     }
 }

@@ -2,7 +2,9 @@ package server;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
+import ui.ChessClient;
 import ui.ChessRender;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
@@ -17,9 +19,10 @@ import javax.websocket.*;
 
 public class WebSocketFacade extends Endpoint {
     Session session;
+    ChessClient chessClient;
 
-
-    public WebSocketFacade(String url) throws ResponseException {
+    public WebSocketFacade(String url, ChessClient chessClient) throws ResponseException {
+        this.chessClient = chessClient;
         try {
             url = url.replace("http", "ws");
             URI uri = new URI(url + "/ws");
@@ -31,11 +34,11 @@ public class WebSocketFacade extends Endpoint {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                     if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
                         ChessBoard board = serverMessage.getGame().getBoard();
-                        System.out.print(ChessRender.render(board, serverMessage.getTeamColor()));
+                        System.out.print(ChessRender.render(board, chessClient.getViewColor()));
                     } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
-                        System.out.print("Error: " + serverMessage.getMessage());
+                        System.out.print("Error: " + serverMessage.getMessage() + "\n");
                     } else {
-                        System.out.print(serverMessage.getMessage());
+                        System.out.print(serverMessage.getMessage() + "\n");
                     }
                 }
             });
@@ -46,9 +49,12 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-
-    public void send(String message) throws IOException {
+    public void sendString(String message) throws IOException {
         this.session.getBasicRemote().sendText(message);
+    }
+
+    private void sendMessage(UserGameCommand cmd)  throws IOException {
+        session.getBasicRemote().sendText(new Gson().toJson(cmd));
     }
 
     @Override
@@ -59,7 +65,8 @@ public class WebSocketFacade extends Endpoint {
         sendMessage(new UserGameCommand(authToken, gameId, teamColor));
     }
 
-    private void sendMessage(UserGameCommand cmd)  throws IOException {
-        session.getBasicRemote().sendText(new Gson().toJson(cmd));
+    public void makeMove(String authToken, int gameId, ChessMove move) throws IOException {
+        sendMessage(new UserGameCommand(authToken, gameId, move));
     }
+
 }

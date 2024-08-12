@@ -67,14 +67,9 @@ public class WebSocketHandler {
             return;
         }
 
-        if (gameData.whiteUsername() != null && teamColor == ChessGame.TeamColor.WHITE || gameData.blackUsername() != null && teamColor == ChessGame.TeamColor.BLACK) {
-            connectionManager.sendError(session, "Team taken!");
-            return;
-        }
-
         connectionManager.addSession(gameData.gameID(), session);
 
-        String gameJson = gson.toJson(new ServerMessage(gameData.game(), teamColor));
+        String gameJson = gson.toJson(new ServerMessage(gameData.game()));
         connectionManager.send(session, gameJson);
 
         String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username +
@@ -119,14 +114,14 @@ public class WebSocketHandler {
             return;
         }
 
-        if (game.isInCheckmate(game.getTeamTurn())) {
+        if (game.isInCheckmate((game.getTeamTurn()))) {
             game.setGameOver(true);
-            connectionManager.send(session, "Checkmate. " + username + " wins!");
+            connectionManager.broadcast(gameData.gameID(), "Checkmate. " + username + " wins!");
         } else if (game.isInStalemate(game.getTeamTurn())) {
             game.setGameOver(true);
-            connectionManager.send(session, "Stalemate: game is a draw");
-        } else if (game.isInCheckmate(game.getTeamTurn())) {
-            connectionManager.send(session, "Check.");
+            connectionManager.broadcast(gameData.gameID(), "Stalemate: game is a draw");
+        } else if (game.isInCheck(game.getTeamTurn())) {
+            connectionManager.broadcast(gameData.gameID(), "Check.");
         }
 
         try {
@@ -135,8 +130,9 @@ public class WebSocketHandler {
             connectionManager.sendError(session, "Server Error");
             return;
         }
+
         Gson gson = new Gson();
-        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(gameData.game(), game.getTeamTurn())));
+        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(gameData.game())));
         connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(username + " makes move: " + move)));
     }
 
@@ -151,7 +147,7 @@ public class WebSocketHandler {
     private void connectObserver(Session session, String username, GameData gameData) throws IOException {
         connectionManager.addSession(gameData.gameID(), session);
 
-        String gameJson = gson.toJson(new ServerMessage(gameData.game(), ChessGame.TeamColor.WHITE));
+        String gameJson = gson.toJson(new ServerMessage(gameData.game()));
         connectionManager.send(session, gameJson);
 
         String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
