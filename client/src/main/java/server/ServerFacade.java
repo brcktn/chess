@@ -46,6 +46,10 @@ public class ServerFacade {
         makeRequest("PUT", "/game", req, chessClient.getAuthToken(), null);
     }
 
+    public void leaveGame(JoinGameRequest req) throws ResponseException {
+        makeRequest("DELETE", "/game", req, chessClient.getAuthToken(), null);
+    }
+
     public GameData createGame(GameData req) throws ResponseException {
         return makeRequest("POST", "/game", req, chessClient.getAuthToken(), GameData.class);
     }

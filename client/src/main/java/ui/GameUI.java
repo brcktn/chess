@@ -3,6 +3,8 @@ package ui;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import models.JoinGameRequest;
+import server.ResponseException;
 import server.ServerFacade;
 import server.WebSocketFacade;
 
@@ -94,7 +96,15 @@ public class GameUI implements UI {
     }
 
     private String leaveGame() {
-        return null;
+        try {
+            webSocketFacade.leaveGame(chessClient.getAuthToken(), gameID);
+            chessClient.getServer().leaveGame(new JoinGameRequest(chessClient.getViewColor(), gameID));
+            chessClient.setAsOutOfGame();
+        } catch (IOException | ResponseException e) {
+            return "Could not leave game: " + e.getMessage();
+        }
+
+        return "";
     }
 
     private String resign() {

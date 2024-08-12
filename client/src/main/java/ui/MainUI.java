@@ -141,10 +141,14 @@ public class MainUI implements UI {
                 """;
 
         }
-        chessClient.setAsInGame(gameID, teamColor);
 
-        chessClient.getServer().joinGame(new JoinGameRequest(teamColor, gameID));
-        chessClient.getWebSocketFacade().joinPlayer(chessClient.getAuthToken(), gameID, teamColor);
+        try {
+            chessClient.getServer().joinGame(new JoinGameRequest(teamColor, gameID));
+            chessClient.setAsInGame(gameID, teamColor);
+            chessClient.getWebSocketFacade().joinPlayer(chessClient.getAuthToken(), gameID, teamColor);
+        } catch (ResponseException e) {
+            return "server connection error";
+        }
 
         return "Joined game!";
     }
