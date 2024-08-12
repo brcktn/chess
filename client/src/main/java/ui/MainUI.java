@@ -16,11 +16,13 @@ import static ui.EscapeSequences.ERASE_SCREEN;
 public class MainUI implements UI {
     private final ChessClient chessClient;
     private final ServerFacade serverFacade;
-    private HashMap<Integer, GameData> gameDataMap;
+    private final WebSocketFacade webSocketFacade;
+    private HashMap<Integer, GameData> gameDataMap = new HashMap<>();
 
-    public MainUI(ChessClient chessClient, ServerFacade server) {
+    public MainUI(ChessClient chessClient, ServerFacade server, WebSocketFacade webSocket) {
         this.chessClient = chessClient;
         this.serverFacade = server;
+        this.webSocketFacade = webSocket;
     }
 
 
@@ -129,21 +131,23 @@ public class MainUI implements UI {
                    play <gameID> <color>
                    """;
         }
+
+        ChessGame.TeamColor teamColor;
         if (args[1].equalsIgnoreCase("white")) {
-            serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, gameID));
-            chessClient.setWebSocketFacade(new WebSocketFacade(chessClient.getServerUrl()));
-            return "Joined game as white!\n" +
-                    ChessRender.render(new ChessGame().getBoard());
+            teamColor = ChessGame.TeamColor.WHITE;
         } else if (args[1].equalsIgnoreCase("black")) {
-            serverFacade.joinGame(new JoinGameRequest(ChessGame.TeamColor.BLACK, gameID));
-            chessClient.setWebSocketFacade(new WebSocketFacade(chessClient.getServerUrl()));
-            return "Joined game as black!\n" +
-                    ChessRender.render(new ChessGame().getBoard(), ChessGame.TeamColor.BLACK);
-        }
-        return """
+            teamColor = ChessGame.TeamColor.BLACK;
+        } else {
+            return """
                 invalid team color
                 play <gameNum> <color>
                 """;
+        }
+
+        serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
+
+        chessClient.setAsInGame();
+        return "Joined game!";
     }
 
     private String observeGame(String[] args) {

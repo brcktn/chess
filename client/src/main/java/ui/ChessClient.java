@@ -1,8 +1,12 @@
 package ui;
 
+import server.ResponseException;
 import server.ServerFacade;
 import server.WebSocketFacade;
 
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 public class ChessClient {
@@ -29,13 +33,28 @@ public class ChessClient {
     }
 
     public void setAsLoggedIn(String authToken) {
-        ui = new MainUI(this, server);
+        ui = new MainUI(this, server, webSocketFacade);
         this.authToken = authToken;
     }
 
     public void setAsLoggedOut() {
         ui = new LoginUI(this, server);
         this.authToken = null;
+    }
+
+    public void setAsInGame() throws ResponseException {
+        ui = new GameUI(this, server, webSocketFacade);
+        setWebSocketFacade(new WebSocketFacade(getServerUrl()));
+    }
+
+    public void setAsObserve() throws ResponseException {
+        ui = new ObserveUI(this, server);
+        setWebSocketFacade(new WebSocketFacade(getServerUrl()));
+    }
+
+    public void setAsOutOfGame() {
+        ui = new MainUI(this, server, webSocketFacade);
+        setWebSocketFacade(null);
     }
 
     public String getAuthToken() {

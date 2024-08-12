@@ -1,11 +1,14 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.websocket.ContainerProvider;
+import javax.websocket.WebSocketContainer;
 import javax.websocket.*;
 
 public class WebSocketFacade extends Endpoint {
@@ -39,8 +42,8 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void joinPlayer() throws IOException {
-
+    public void joinPlayer(String authToken, int gameId, ChessGame.TeamColor teamColor) throws IOException {
+        sendMessage(new UserGameCommand(authToken, gameId, teamColor));
     }
 
     private void sendMessage(UserGameCommand cmd)  throws IOException {
