@@ -82,4 +82,8 @@ public class ChessClient {
     public String getServerUrl() {
         return serverUrl;
     }
+
+    public UI getUi() {
+        return ui;
+    }
 }

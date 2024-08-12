@@ -59,15 +59,10 @@ public class GameUI implements UI {
         if (args.length == 3) {
 
             promotionPiece = switch (args[2]) {
-                case "q" -> ChessPiece.PieceType.QUEEN;
-                case "queen" -> ChessPiece.PieceType.QUEEN;
-                case "r" -> ChessPiece.PieceType.ROOK;
-                case "rook" -> ChessPiece.PieceType.ROOK;
-                case "b" -> ChessPiece.PieceType.BISHOP;
-                case "bishop" -> ChessPiece.PieceType.BISHOP;
-                case "k" -> ChessPiece.PieceType.KNIGHT;
-                case "n" -> ChessPiece.PieceType.KNIGHT;
-                case "knight" -> ChessPiece.PieceType.KNIGHT;
+                case "q", "queen" -> ChessPiece.PieceType.QUEEN;
+                case "r", "rook" -> ChessPiece.PieceType.ROOK;
+                case "b", "bishop" -> ChessPiece.PieceType.BISHOP;
+                case "k", "n", "knight" -> ChessPiece.PieceType.KNIGHT;
                 default -> null;
             };
             if (promotionPiece == null) {
@@ -103,7 +98,7 @@ public class GameUI implements UI {
         } catch (IOException | ResponseException e) {
             return "Could not leave game: " + e.getMessage();
         }
-
+        System.out.print(chessClient.getUi().help());
         return "";
     }
 

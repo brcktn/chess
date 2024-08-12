@@ -43,6 +43,7 @@ public class LoginUI implements UI {
         }
         UserData req = new UserData(args[0], args[1], null);
         chessClient.setAsLoggedIn(serverFacade.login(req).authToken());
+        System.out.print(chessClient.getUi().help());
         return "Logged in!";
     }
 
@@ -52,6 +53,7 @@ public class LoginUI implements UI {
         }
         UserData req = new UserData(args[0], args[1], args[2]);
         chessClient.setAsLoggedIn(serverFacade.register(req).authToken());
+        System.out.print(chessClient.getUi().help());
         return "Registered!";
     }
 }

@@ -149,7 +149,7 @@ public class MainUI implements UI {
         } catch (ResponseException e) {
             return "server connection error";
         }
-
+        System.out.print(chessClient.getUi().help());
         return "Joined game!";
     }
 
