@@ -15,6 +15,7 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -68,8 +69,20 @@ public class WebSocketHandler {
         String gameJson = gson.toJson(new ServerMessage(gameData.game()));
         connectionManager.send(session, gameJson);
 
-        String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username +
-                " joined game"));
+        String teamColor = null;
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            teamColor = "white";
+        } else if (Objects.equals(gameData.blackUsername(), username)) {
+            teamColor = "black";
+        }
+        String notification;
+        if (teamColor == null) {
+            notification = username + " is now observing";
+        } else {
+            notification = username + " joined the game as " + teamColor;
+        }
+
+        String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, notification));
         connectionManager.broadcast(gameData.gameID(), notificationJson, session);
     }
 
@@ -110,15 +123,21 @@ public class WebSocketHandler {
             return;
         }
 
+        String otherUser;
         Gson gson = new Gson();
+        if (username.equals(gameData.whiteUsername())) {
+            otherUser = gameData.blackUsername();
+        } else {
+            otherUser = gameData.whiteUsername();
+        }
         if (game.isInCheckmate((game.getTeamTurn()))) {
             game.setGameOver(true);
-            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Checkmate. " + username + " wins!")), null);
+            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(otherUser + " is in checkmate. " + username + " wins!")), null);
         } else if (game.isInStalemate(game.getTeamTurn())) {
             game.setGameOver(true);
             connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Stalemate: game is a draw")), null);
         } else if (game.isInCheck(game.getTeamTurn())) {
-            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Check.")), null);
+            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(otherUser + "is in check.")), null);
         }
 
         try {
@@ -141,7 +160,20 @@ public class WebSocketHandler {
 
     private void resign(Session session, String username, GameData gameData) throws IOException {
         ChessGame game = gameData.game();
+        if (!(Objects.equals(username, gameData.whiteUsername()) || !Objects.equals(username, gameData.blackUsername()))) {
+            connectionManager.sendError(session, "Observer cannot resign");
+            return;
+        }
+        if (game.getGameOver()) {
+            connectionManager.sendError(session, "Game is over");
+            return;
+        }
         game.setGameOver(true);
+        try {
+            dataAccess.updateGame(gameData);
+        } catch (DataAccessException e) {
+            connectionManager.sendError(session, "Server Error");
+        }
         String otherUser;
         if (username.equals(gameData.whiteUsername())) {
             otherUser = gameData.blackUsername();

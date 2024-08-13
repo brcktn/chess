@@ -1,14 +1,20 @@
 package ui;
 
+import models.JoinGameRequest;
+import server.ResponseException;
 import server.ServerFacade;
+
+import java.io.IOException;
 
 public class ObserveUI implements UI {
     private final ChessClient chessClient;
     private final ServerFacade serverFacade;
+    private final int gameID;
 
-    public ObserveUI(ChessClient chessClient, ServerFacade serverFacade) {
+    public ObserveUI(ChessClient chessClient, ServerFacade serverFacade, int gameID) {
         this.chessClient = chessClient;
         this.serverFacade = serverFacade;
+        this.gameID = gameID;
     }
 
     @Override
@@ -38,7 +44,9 @@ public class ObserveUI implements UI {
     }
 
     private String leaveGame() {
-        return null;
+        chessClient.setAsOutOfGame();
+        System.out.print(chessClient.getUi().help());
+        return "";
     }
 
     private String highlightMoves(String[] args) {

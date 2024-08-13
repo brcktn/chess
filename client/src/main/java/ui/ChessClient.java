@@ -47,10 +47,10 @@ public class ChessClient {
         ui = new GameUI(this, server, webSocketFacade, gameID);
     }
 
-    public void setAsObserve() throws ResponseException {
+    public void setAsObserve(int gameID) throws ResponseException {
         this.viewColor = ChessGame.TeamColor.WHITE;
         setWebSocketFacade(new WebSocketFacade(getServerUrl(), this));
-        ui = new ObserveUI(this, server);
+        ui = new ObserveUI(this, server, gameID);
     }
 
     public void setAsOutOfGame() {

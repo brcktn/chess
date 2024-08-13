@@ -1,13 +1,11 @@
 package ui;
 
-import chess.ChessBoard;
+
 import chess.ChessGame;
 import models.GameData;
 import models.JoinGameRequest;
 import models.ListGamesResponse;
 import server.ResponseException;
-import server.ServerFacade;
-import server.WebSocketFacade;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -104,7 +102,7 @@ public class MainUI implements UI {
         return builder.toString();
     }
 
-    private String playGame(String[] args) throws ResponseException, IOException {
+    private String playGame(String[] args) throws IOException {
         if (args.length != 2) {
             return """
                     play <gameNum> <color>
@@ -178,7 +176,7 @@ public class MainUI implements UI {
                    """;
         }
 
-        chessClient.setAsObserve();
+        chessClient.setAsObserve(gameID);
 
         chessClient.getWebSocketFacade().joinPlayer(chessClient.getAuthToken(), gameID, null);
         return "Observing game!";

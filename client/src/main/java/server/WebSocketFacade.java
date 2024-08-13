@@ -36,7 +36,7 @@ public class WebSocketFacade extends Endpoint {
                         ChessBoard board = serverMessage.getGame().getBoard();
                         System.out.print(ChessRender.render(board, chessClient.getViewColor()));
                     } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
-                        System.out.print(serverMessage.getMessage() + "\n");
+                        System.out.print(serverMessage.getErrorMessage() + "\n");
                     } else {
                         System.out.print(serverMessage.getMessage() + "\n");
                     }

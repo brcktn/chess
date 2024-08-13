@@ -12,6 +12,8 @@ import java.util.Objects;
 public class ServerMessage {
     ServerMessageType serverMessageType;
     String message;
+    String errorMessage;
+    boolean isError;
     ChessGame game;
 
     public enum ServerMessageType {
@@ -22,11 +24,12 @@ public class ServerMessage {
 
     public ServerMessage(ServerMessageType type, String message) {
         this.serverMessageType = type;
-        if (type == ServerMessageType.ERROR) {
-            this.message = "errorMessage: " + message;
-        } else {
-            this.message = message;
-        }
+        this.message = message;
+    }
+
+    public ServerMessage(ServerMessageType type, String errorMessage, boolean isError) {
+        this.serverMessageType = type;
+        this.message = errorMessage;
     }
 
     public ServerMessage(String message) {
@@ -45,6 +48,10 @@ public class ServerMessage {
 
     public String getMessage() {
         return this.message;
+    }
+
+    public String getErrorMessage() {
+        return this.errorMessage;
     }
 
     public ChessGame getGame() {

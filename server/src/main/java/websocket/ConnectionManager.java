@@ -2,6 +2,7 @@ package websocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.ServerErrorMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ConnectionManager {
     }
 
     public void sendError(Session session, String message) throws IOException {
-        ServerMessage error = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+        ServerErrorMessage error = new ServerErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
         send(session, new Gson().toJson(error));
     }
 
