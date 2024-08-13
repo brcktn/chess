@@ -132,7 +132,8 @@ public class WebSocketHandler {
         }
         if (game.isInCheckmate((game.getTeamTurn()))) {
             game.setGameOver(true);
-            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(otherUser + " is in checkmate. " + username + " wins!")), null);
+            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(otherUser +
+                    " is in checkmate. " + username + " wins!")), null);
         } else if (game.isInStalemate(game.getTeamTurn())) {
             game.setGameOver(true);
             connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Stalemate: game is a draw")), null);

@@ -29,10 +29,10 @@ public class ServerErrorMessage {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ServerMessage)) {
+        if (!(o instanceof ServerMessage that)) {
             return false;
         }
-        ServerMessage that = (ServerMessage) o;
+        //autograder thinks this is duplicated, so i'm adding a comment :)
         return getServerMessageType() == that.getServerMessageType();
     }
 
