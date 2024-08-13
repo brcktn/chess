@@ -36,7 +36,7 @@ public class WebSocketFacade extends Endpoint {
                         ChessBoard board = serverMessage.getGame().getBoard();
                         System.out.print(ChessRender.render(board, chessClient.getViewColor()));
                     } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
-                        System.out.print("Error: " + serverMessage.getMessage() + "\n");
+                        System.out.print(serverMessage.getMessage() + "\n");
                     } else {
                         System.out.print(serverMessage.getMessage() + "\n");
                     }
@@ -71,6 +71,10 @@ public class WebSocketFacade extends Endpoint {
 
     public void leaveGame(String authToken, int gameId) throws IOException {
         sendMessage(new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameId));
+    }
+
+    public void resign(String authToken, int gameID) throws IOException {
+        sendMessage(new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID));
     }
 
 }

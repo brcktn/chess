@@ -39,17 +39,17 @@ public class WebSocketHandler {
             gameData = dataAccess.getGame(cmd.getGameID());
 
             if (authData == null) {
-                connectionManager.sendError(session, "Error: invalid auth");
+                connectionManager.sendError(session, "invalid auth");
                 return;
             }
 
             if (gameData == null) {
-                connectionManager.sendError(session, "Error: invalid gameID");
+                connectionManager.sendError(session, "invalid gameID");
                 return;
             }
 
         } catch (DataAccessException e) {
-            connectionManager.sendError(session, "Error: server error:" + e.getMessage());
+            connectionManager.sendError(session, "server error:" + e.getMessage());
             return;
         }
 
@@ -70,7 +70,7 @@ public class WebSocketHandler {
 
         String notificationJson = gson.toJson(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, username +
                 " joined game"));
-        connectionManager.broadcast(gameData.gameID(), notificationJson);
+        connectionManager.broadcast(gameData.gameID(), notificationJson, session);
     }
 
     private void makeMove(Session session, String username, ChessMove move, GameData gameData) throws IOException {
@@ -113,12 +113,12 @@ public class WebSocketHandler {
         Gson gson = new Gson();
         if (game.isInCheckmate((game.getTeamTurn()))) {
             game.setGameOver(true);
-            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Checkmate. " + username + " wins!")));
+            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Checkmate. " + username + " wins!")), null);
         } else if (game.isInStalemate(game.getTeamTurn())) {
             game.setGameOver(true);
-            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Stalemate: game is a draw")));
+            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Stalemate: game is a draw")), null);
         } else if (game.isInCheck(game.getTeamTurn())) {
-            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Check.")));
+            connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage("Check.")), null);
         }
 
         try {
@@ -128,19 +128,27 @@ public class WebSocketHandler {
             return;
         }
 
-        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(gameData.game())));
-        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(username + " makes move: " + move)));
+        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(gameData.game())), null);
+        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(username + " makes move: " + move)), session);
     }
 
     private void leave(Session session, String username, GameData gameData) throws IOException {
         connectionManager.remove(gameData.gameID(), session);
 
         String notificationJson = gson.toJson(new ServerMessage(username + " has left"));
-        connectionManager.broadcast(gameData.gameID(), notificationJson);
+        connectionManager.broadcast(gameData.gameID(), notificationJson, session);
     }
 
-    private void resign(Session session, String username, GameData gameData) {
-
+    private void resign(Session session, String username, GameData gameData) throws IOException {
+        ChessGame game = gameData.game();
+        game.setGameOver(true);
+        String otherUser;
+        if (username.equals(gameData.whiteUsername())) {
+            otherUser = gameData.blackUsername();
+        } else {
+            otherUser = gameData.whiteUsername();
+        }
+        connectionManager.broadcast(gameData.gameID(), gson.toJson(new ServerMessage(username + " resigns, " + otherUser + " wins!")), null);
     }
 
 }

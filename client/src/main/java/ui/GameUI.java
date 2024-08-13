@@ -103,7 +103,12 @@ public class GameUI implements UI {
     }
 
     private String resign() {
-        return null;
+        try {
+            webSocketFacade.resign(chessClient.getAuthToken(), gameID);
+        } catch (IOException e) {
+            return "Could not resign game: " + e.getMessage();
+        }
+        return "";
     }
 
     private String highlightMoves(String[] args) {

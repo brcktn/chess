@@ -5,7 +5,9 @@ import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.io.ObjectStreamException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,9 +26,11 @@ public class ConnectionManager {
         }
     }
 
-    public void broadcast(int gameId, String message) throws IOException {
+    public void broadcast(int gameId, String message, Session excludeSession) throws IOException {
         for (Session session : sessions.get(gameId)) {
-            send(session, message);
+            if (!Objects.equals(session, excludeSession)) {
+                send(session, message);
+            }
         }
     }
 

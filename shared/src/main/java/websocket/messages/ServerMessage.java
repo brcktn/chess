@@ -22,7 +22,11 @@ public class ServerMessage {
 
     public ServerMessage(ServerMessageType type, String message) {
         this.serverMessageType = type;
-        this.message = message;
+        if (type == ServerMessageType.ERROR) {
+            this.message = "errorMessage: " + message;
+        } else {
+            this.message = message;
+        }
     }
 
     public ServerMessage(String message) {
